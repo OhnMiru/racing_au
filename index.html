@@ -286,7 +286,7 @@
         .sidebar .synopsis-link {
             display: block;
             padding: 8px 10px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             background: var(--text-link-hover);
             border-radius: 6px;
             color: var(--text-link);
@@ -304,6 +304,31 @@
         }
 
         .sidebar .synopsis-link.active {
+            background: var(--text-link-hover);
+            opacity: 0.9;
+        }
+
+        .sidebar .arts-link {
+            display: block;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            background: var(--text-link-hover);
+            border-radius: 6px;
+            color: var(--text-link);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border-left: 3px solid #9c27b0;
+            transition: 0.15s;
+            cursor: pointer;
+        }
+
+        .sidebar .arts-link:hover {
+            background: var(--text-link-hover);
+            opacity: 0.8;
+        }
+
+        .sidebar .arts-link.active {
             background: var(--text-link-hover);
             opacity: 0.9;
         }
@@ -468,6 +493,106 @@
             color: var(--text-secondary);
         }
 
+        /* ===== СТРАНИЦА АРТОВ ===== */
+        .arts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .art-card {
+            background: var(--bg-block);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .art-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .art-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .art-card .art-info {
+            padding: 12px 14px;
+        }
+
+        .art-card .art-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .art-card .art-artist {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .art-card .art-artist a {
+            color: var(--text-link);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--border-color);
+        }
+
+        .art-card .art-artist a:hover {
+            border-bottom: 1px solid var(--text-link);
+        }
+
+        /* ===== ЛАЙТБОКС ===== */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox .lightbox-content {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            object-fit: contain;
+        }
+
+        .lightbox .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+            transition: 0.2s;
+            font-family: Arial, sans-serif;
+            line-height: 1;
+        }
+
+        .lightbox .lightbox-close:hover {
+            color: #e0e0e0;
+            transform: scale(1.1);
+        }
+
         /* ===== КНОПКИ РЕДАКТИРОВАНИЯ ===== */
         .edit-actions {
             display: none;
@@ -540,6 +665,37 @@
             .header-controls .theme-btn {
                 width: 100%;
             }
+
+            .arts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+
+            .art-card img {
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .arts-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .art-card img {
+                height: 120px;
+            }
+
+            .art-card .art-info {
+                padding: 8px 10px;
+            }
+
+            .art-card .art-title {
+                font-size: 13px;
+            }
+
+            .art-card .art-artist {
+                font-size: 11px;
+            }
         }
 
         /* ===== УВЕДОМЛЕНИЕ ===== */
@@ -598,6 +754,12 @@
 
 <div class="notification" id="notification"></div>
 
+<!-- ===== ЛАЙТБОКС ===== -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img class="lightbox-content" id="lightboxImg" src="" alt="">
+</div>
+
 <div class="header">
     <div class="logo-area" id="logoArea">
         <span style="font-size:24px;">🏁</span>
@@ -618,6 +780,7 @@
 <div class="wiki-container">
     <nav class="sidebar" id="sidebar">
         <a class="synopsis-link" data-target="synopsis" onclick="navigateTo('synopsis')">Сюжет</a>
+        <a class="arts-link" data-target="arts" onclick="navigateTo('arts')">Арты</a>
         <h3>Персонажи</h3>
         <ul id="navList"></ul>
     </nav>
@@ -895,6 +1058,30 @@
         ]
     };
 
+    // ===== АРТЫ =====
+    const artsData = {
+        id: "arts",
+        title: "Арты",
+        arts: [
+            { id: "art_albert_ded", title: "Альбер с дедом", image: "images/альбер_дед.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_yoko", title: "Альбер и Йоко", image: "images/альбер_йоко.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_korobka", title: "Альбер с коробкой", image: "images/альбер_коробка.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_kyu", title: "Альбер и Кью", image: "images/альбер_кью.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_li", title: "Альбер и Ли", image: "images/альбер_ли.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_mari", title: "Альбер и Мари", image: "images/альбер_мари.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_olli", title: "Альбер и Олли", image: "images/альбер_олли.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_roland", title: "Альбер и Роланд", image: "images/альбер_роланд.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_albert_sarancha", title: "Альбер и Саранча", image: "images/альбер_саранча.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_vse_miel", title: "Все и Миель", image: "images/все_миел.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_kayberu_yoko", title: "Кейберу и Йоко", image: "images/кейберу_йоко.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_kayberu_plaksa", title: "Кейберу и Плакса", image: "images/кейберу_плакса.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_kayberu_solnce", title: "Кейберу и Солнце", image: "images/кейберу_солнце.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_kayle_yoko", title: "Кейл и Йоко", image: "images/кейл_йоко.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_kayle_li", title: "Кейл и Ли", image: "images/кейл_ли.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" },
+            { id: "art_su_yoko", title: "Су и Йоко", image: "images/су_йоко.png", artist: "Художник", artistLink: "https://t.me/hudozhnik" }
+        ]
+    };
+
     // ===== ОСНОВНАЯ ЛОГИКА =====
     let isEditMode = false;
     let isEditingPage = null;
@@ -922,6 +1109,29 @@
         }
     }
 
+    // ===== ЛАЙТБОКС =====
+    function openLightbox(imageSrc) {
+        const lightbox = document.getElementById('lightbox');
+        const img = document.getElementById('lightboxImg');
+        img.src = imageSrc;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Закрытие по Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+
+    // ===== РЕНДЕР =====
     function renderBlocks(blocks, pageId) {
         let html = '';
         blocks.forEach((block, index) => {
@@ -942,7 +1152,7 @@
     function renderSynopsis() {
         const blocksHTML = renderBlocks(synopsisData.blocks, 'synopsis');
         return `
-            <div class="page active" data-id="synopsis">
+            <div class="page" data-id="synopsis">
                 <h2>
                     ${synopsisData.title}
                     <button class="edit-toggle-btn" onclick="togglePageEdit('synopsis')">Редактировать</button>
@@ -951,6 +1161,40 @@
                 <div class="edit-actions">
                     <button class="save-btn" onclick="savePage('synopsis')">Сохранить</button>
                     <button class="cancel-btn" onclick="cancelPageEdit('synopsis')">Отмена</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderArts() {
+        let artsHTML = '<div class="arts-grid">';
+        artsData.arts.forEach(art => {
+            artsHTML += `
+                <div class="art-card" onclick="openLightbox('${art.image}')">
+                    <img src="${art.image}" alt="${art.title}" loading="lazy" onerror="this.style.display='none'">
+                    <div class="art-info">
+                        <div class="art-title">${art.title}</div>
+                        <div class="art-artist">
+                            Художник: <a href="${art.artistLink}" target="_blank" onclick="event.stopPropagation()">${art.artist}</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        artsHTML += '</div>';
+
+        return `
+            <div class="page" data-id="arts">
+                <h2>
+                    ${artsData.title}
+                    <button class="edit-toggle-btn" onclick="toggleArtsEdit()">Редактировать</button>
+                </h2>
+                <div id="artsContainer">
+                    ${artsHTML}
+                </div>
+                <div class="edit-actions" id="artsEditActions">
+                    <button class="save-btn" onclick="saveArts()">Сохранить</button>
+                    <button class="cancel-btn" onclick="cancelArtsEdit()">Отмена</button>
                 </div>
             </div>
         `;
@@ -993,13 +1237,14 @@
     function navigateTo(id) {
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
+        if (isEditingArts) cancelArtsEdit();
 
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
         const target = document.querySelector(`.page[data-id="${id}"]`);
         if (target) target.classList.add('active');
 
-        document.querySelectorAll('#navList a, .synopsis-link').forEach(a => {
+        document.querySelectorAll('#navList a, .synopsis-link, .arts-link').forEach(a => {
             a.classList.toggle('active', a.dataset.target === id);
         });
 
@@ -1037,6 +1282,7 @@
 
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
+        if (isEditingArts) cancelArtsEdit();
 
         isEditMode = false;
 
@@ -1064,6 +1310,7 @@
 
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
+        if (isEditingArts) cancelArtsEdit();
 
         const page = document.querySelector(`.page[data-id="${pageId}"]`);
         if (!page) return;
@@ -1105,6 +1352,31 @@
         if (isEditingPage === pageId) isEditingPage = null;
     }
 
+    function savePage(pageId) {
+        const page = document.querySelector(`.page[data-id="${pageId}"]`);
+        if (!page) return;
+
+        const char = sortedCharacters.find(c => c.id === pageId);
+
+        const blockContents = page.querySelectorAll('.block-content');
+        if (char) {
+            blockContents.forEach((el, index) => {
+                if (char.blocks[index]) {
+                    char.blocks[index].content = el.innerHTML;
+                }
+            });
+        } else if (pageId === 'synopsis') {
+            blockContents.forEach((el, index) => {
+                if (synopsisData.blocks[index]) {
+                    synopsisData.blocks[index].content = el.innerHTML;
+                }
+            });
+        }
+
+        cancelPageEdit(pageId);
+        showNotification('Страница сохранена! Не забудьте экспортировать JSON.', 'success');
+    }
+
     // ===== РЕДАКТИРОВАНИЕ БЛОКА =====
     function toggleBlockEdit(pageId, blockIndex) {
         if (!isEditMode) {
@@ -1120,6 +1392,7 @@
 
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
+        if (isEditingArts) cancelArtsEdit();
 
         const page = document.querySelector(`.page[data-id="${pageId}"]`);
         if (!page) return;
@@ -1201,37 +1474,157 @@
         isEditingBlock = null;
     }
 
-    // ===== СОХРАНЕНИЕ СТРАНИЦЫ =====
-    function savePage(pageId) {
-        const page = document.querySelector(`.page[data-id="${pageId}"]`);
-        if (!page) return;
+    // ===== РЕДАКТИРОВАНИЕ АРТОВ =====
+    let isEditingArts = false;
+    let artsOriginalData = [];
 
-        const char = sortedCharacters.find(c => c.id === pageId);
-
-        const blockContents = page.querySelectorAll('.block-content');
-        if (char) {
-            blockContents.forEach((el, index) => {
-                if (char.blocks[index]) {
-                    char.blocks[index].content = el.innerHTML;
-                }
-            });
-        } else if (pageId === 'synopsis') {
-            blockContents.forEach((el, index) => {
-                if (synopsisData.blocks[index]) {
-                    synopsisData.blocks[index].content = el.innerHTML;
-                }
-            });
+    function toggleArtsEdit() {
+        if (!isEditMode) {
+            showNotification('Сначала активируйте режим редактирования (7 кликов по логотипу)', 'warning');
+            return;
         }
 
-        cancelPageEdit(pageId);
-        showNotification('Страница сохранена! Не забудьте экспортировать JSON.', 'success');
+        if (isEditingArts) {
+            cancelArtsEdit();
+            return;
+        }
+
+        if (isEditingPage) cancelPageEdit(isEditingPage);
+        if (isEditingBlock) cancelBlockEdit();
+
+        // Сохраняем оригинальные данные для отмены
+        artsOriginalData = JSON.parse(JSON.stringify(artsData.arts));
+
+        // Делаем карточки редактируемыми
+        const container = document.getElementById('artsContainer');
+        const cards = container.querySelectorAll('.art-card');
+        cards.forEach((card, index) => {
+            const titleEl = card.querySelector('.art-title');
+            const artistEl = card.querySelector('.art-artist a');
+            
+            // Делаем title редактируемым
+            titleEl.contentEditable = true;
+            titleEl.dataset.original = titleEl.textContent;
+            
+            // Делаем artist редактируемым
+            const artistSpan = card.querySelector('.art-artist');
+            const artistText = artistSpan.textContent.replace('Художник: ', '').trim();
+            
+            // Заменяем ссылку на редактируемый текст
+            const artistLink = artistEl;
+            const linkText = artistLink.textContent;
+            const linkHref = artistLink.href;
+            
+            // Создаём редактируемый span для имени художника
+            const newArtistSpan = document.createElement('span');
+            newArtistSpan.contentEditable = true;
+            newArtistSpan.textContent = linkText;
+            newArtistSpan.dataset.original = linkText;
+            newArtistSpan.dataset.originalLink = linkHref;
+            newArtistSpan.className = 'editable-artist';
+            newArtistSpan.style.color = 'var(--text-link)';
+            newArtistSpan.style.borderBottom = '1px dotted var(--border-color)';
+            newArtistSpan.style.cursor = 'text';
+            
+            // Заменяем ссылку
+            artistSpan.replaceChild(newArtistSpan, artistLink);
+            
+            // Добавляем поле для ссылки (скрытое)
+            const linkInput = document.createElement('input');
+            linkInput.type = 'text';
+            linkInput.className = 'artist-link-input';
+            linkInput.value = linkHref;
+            linkInput.style.display = 'none';
+            linkInput.dataset.index = index;
+            card.appendChild(linkInput);
+        });
+
+        document.getElementById('artsEditActions').classList.add('active');
+        const btn = document.querySelector('.page[data-id="arts"] .edit-toggle-btn');
+        if (btn) btn.textContent = 'Отменить';
+
+        isEditingArts = true;
+        showNotification('Режим редактирования артов активирован. Нажмите на название или имя художника для изменения.', 'info');
+    }
+
+    function cancelArtsEdit() {
+        if (!isEditingArts) return;
+
+        // Восстанавливаем данные
+        artsData.arts = JSON.parse(JSON.stringify(artsOriginalData));
+
+        // Перерендериваем арты
+        renderArtsGrid();
+
+        document.getElementById('artsEditActions').classList.remove('active');
+        const btn = document.querySelector('.page[data-id="arts"] .edit-toggle-btn');
+        if (btn) btn.textContent = 'Редактировать';
+
+        isEditingArts = false;
+        showNotification('Редактирование отменено', 'info');
+    }
+
+    function renderArtsGrid() {
+        const container = document.getElementById('artsContainer');
+        let artsHTML = '<div class="arts-grid">';
+        artsData.arts.forEach(art => {
+            artsHTML += `
+                <div class="art-card" onclick="openLightbox('${art.image}')">
+                    <img src="${art.image}" alt="${art.title}" loading="lazy" onerror="this.style.display='none'">
+                    <div class="art-info">
+                        <div class="art-title">${art.title}</div>
+                        <div class="art-artist">
+                            Художник: <a href="${art.artistLink}" target="_blank" onclick="event.stopPropagation()">${art.artist}</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        artsHTML += '</div>';
+        container.innerHTML = artsHTML;
+    }
+
+    function saveArts() {
+        // Собираем данные из редактируемых полей
+        const container = document.getElementById('artsContainer');
+        const cards = container.querySelectorAll('.art-card');
+        
+        cards.forEach((card, index) => {
+            const titleEl = card.querySelector('.art-title');
+            const artistEl = card.querySelector('.editable-artist');
+            const linkInput = card.querySelector('.artist-link-input');
+            
+            if (titleEl && artsData.arts[index]) {
+                artsData.arts[index].title = titleEl.textContent.trim();
+            }
+            
+            if (artistEl && artsData.arts[index]) {
+                artsData.arts[index].artist = artistEl.textContent.trim();
+            }
+            
+            if (linkInput && artsData.arts[index]) {
+                artsData.arts[index].artistLink = linkInput.value.trim();
+            }
+        });
+
+        // Выходим из режима редактирования
+        document.getElementById('artsEditActions').classList.remove('active');
+        const btn = document.querySelector('.page[data-id="arts"] .edit-toggle-btn');
+        if (btn) btn.textContent = 'Редактировать';
+
+        // Перерендериваем
+        renderArtsGrid();
+
+        isEditingArts = false;
+        showNotification('Арты сохранены! Не забудьте экспортировать JSON.', 'success');
     }
 
     // ===== ЭКСПОРТ JSON =====
     function exportData() {
         const data = {
             characters: sortedCharacters,
-            synopsis: synopsisData
+            synopsis: synopsisData,
+            arts: artsData.arts
         };
 
         const json = JSON.stringify(data, null, 2);
@@ -1281,6 +1674,7 @@
         const container = document.getElementById('contentArea');
 
         container.innerHTML = renderSynopsis();
+        container.innerHTML += renderArts();
 
         sortedCharacters.forEach(char => {
             container.innerHTML += renderPage(char);
@@ -1300,10 +1694,15 @@
     window.toggleBlockEdit = toggleBlockEdit;
     window.saveBlock = saveBlock;
     window.cancelBlockEdit = cancelBlockEdit;
+    window.toggleArtsEdit = toggleArtsEdit;
+    window.saveArts = saveArts;
+    window.cancelArtsEdit = cancelArtsEdit;
     window.exportData = exportData;
     window.exitEditMode = exitEditMode;
     window.showNotification = showNotification;
     window.toggleTheme = toggleTheme;
+    window.openLightbox = openLightbox;
+    window.closeLightbox = closeLightbox;
 </script>
 
 </body>
