@@ -1129,11 +1129,8 @@
             if (targetId === currentId) return; // не ссылаемся сами на себя
             
             const regex = new RegExp(`\\b${alias}\\b`, 'g');
-            // Находим полное имя персонажа для отображения
-            const char = sortedCharacters.find(c => c.id === targetId);
-            const displayName = char ? char.title : alias;
-            
-            result = result.replace(regex, `<a class="wiki-link" data-target="${targetId}" onclick="navigateTo('${targetId}')">${displayName}</a>`);
+            // Заменяем на ссылку, сохраняя оригинальный текст (алиас)
+            result = result.replace(regex, `<a class="wiki-link" data-target="${targetId}" onclick="navigateTo('${targetId}')">${alias}</a>`);
         });
 
         return result;
