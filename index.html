@@ -5,6 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Гоночная АУ — Вики</title>
     <style>
+        /* ===== ПЕРЕМЕННЫЕ ДЛЯ ТЕМ ===== */
+        :root {
+            --bg-body: #f6f6f6;
+            --bg-page: #ffffff;
+            --bg-sidebar: #ffffff;
+            --bg-block: #f8f9fa;
+            --text-primary: #222222;
+            --text-secondary: #54595d;
+            --text-link: #0645ad;
+            --text-link-hover: #eaf3ff;
+            --border-color: #a2a9b1;
+            --border-light: #eaecf0;
+            --shadow: rgba(0,0,0,0.08);
+            --edit-bg: #fffde7;
+            --edit-border: #f9a825;
+            --badge-bg: #e8f5e9;
+            --badge-color: #2e7d32;
+            --badge-border: #a5d6a7;
+            --btn-primary: #3366cc;
+            --btn-primary-hover: #2a4fa8;
+            --btn-success: #4caf50;
+            --btn-success-hover: #388e3c;
+            --btn-danger: #d32f2f;
+            --btn-danger-hover: #b71c1c;
+            --btn-cancel: #e0e0e0;
+            --btn-cancel-hover: #c8c8c8;
+            --synopsis-border: #e60000;
+            --synopsis-bg: #f8f9fa;
+            --notification-success: #2e7d32;
+            --notification-info: #1a237e;
+            --notification-warning: #e65100;
+            --notification-error: #c62828;
+            --logo-hover: #f0f0f0;
+        }
+
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        body.dark-theme {
+            --bg-body: #1a1a1a;
+            --bg-page: #2d2d2d;
+            --bg-sidebar: #2d2d2d;
+            --bg-block: #3d3d3d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --text-link: #6aa8ff;
+            --text-link-hover: #1a3a5a;
+            --border-color: #555555;
+            --border-light: #444444;
+            --shadow: rgba(0,0,0,0.3);
+            --edit-bg: #3d3d2d;
+            --edit-border: #f9a825;
+            --badge-bg: #1a3a1a;
+            --badge-color: #81c784;
+            --badge-border: #2e7d32;
+            --btn-primary: #1a4a8a;
+            --btn-primary-hover: #2a5a9a;
+            --btn-success: #2e7d32;
+            --btn-success-hover: #388e3c;
+            --btn-danger: #8b1a1a;
+            --btn-danger-hover: #a02222;
+            --btn-cancel: #444444;
+            --btn-cancel-hover: #555555;
+            --synopsis-border: #ff4444;
+            --synopsis-bg: #3d2d2d;
+            --notification-success: #1a3a1a;
+            --notification-info: #1a1a3a;
+            --notification-warning: #3a2a1a;
+            --notification-error: #3a1a1a;
+            --logo-hover: #3a3a3a;
+        }
+
+        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -13,12 +84,14 @@
 
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background: #f6f6f6;
-            color: #222;
+            background: var(--bg-body);
+            color: var(--text-primary);
             line-height: 1.6;
             padding: 20px;
+            transition: background 0.3s, color 0.3s;
         }
 
+        /* ===== ШАПКА ===== */
         .header {
             max-width: 1200px;
             margin: 0 auto 30px;
@@ -27,7 +100,7 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            border-bottom: 2px solid #a2a9b1;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
             cursor: default;
             user-select: none;
@@ -44,14 +117,14 @@
         }
 
         .header .logo-area:hover {
-            background: #f0f0f0;
+            background: var(--logo-hover);
         }
 
         .header h1 {
             font-size: 28px;
             font-weight: 300;
             letter-spacing: 1px;
-            color: #1a1a1a;
+            color: var(--text-primary);
             pointer-events: none;
         }
 
@@ -70,11 +143,11 @@
         .header-controls .edit-badge {
             display: none;
             font-size: 12px;
-            color: #2e7d32;
-            background: #e8f5e9;
+            color: var(--badge-color);
+            background: var(--badge-bg);
             padding: 4px 12px;
             border-radius: 12px;
-            border: 1px solid #a5d6a7;
+            border: 1px solid var(--badge-border);
         }
 
         .header-controls .edit-badge.active {
@@ -84,7 +157,7 @@
         .header-controls .export-btn {
             display: none;
             padding: 6px 16px;
-            background: #2e7d32;
+            background: var(--btn-success);
             color: white;
             border: none;
             border-radius: 4px;
@@ -98,13 +171,13 @@
         }
 
         .header-controls .export-btn:hover {
-            background: #1b5e20;
+            background: var(--btn-success-hover);
         }
 
         .header-controls .exit-btn {
             display: none;
             padding: 6px 16px;
-            background: #d32f2f;
+            background: var(--btn-danger);
             color: white;
             border: none;
             border-radius: 4px;
@@ -118,7 +191,22 @@
         }
 
         .header-controls .exit-btn:hover {
-            background: #b71c1c;
+            background: var(--btn-danger-hover);
+        }
+
+        .header-controls .theme-btn {
+            padding: 6px 16px;
+            background: var(--btn-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .header-controls .theme-btn:hover {
+            background: var(--btn-primary-hover);
         }
 
         .search-box {
@@ -128,23 +216,28 @@
 
         .search-box input {
             padding: 8px 14px;
-            border: 1px solid #a2a9b1;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 15px;
             width: 200px;
-            background: white;
+            background: var(--bg-page);
+            color: var(--text-primary);
             transition: 0.3s;
         }
 
         .search-box input:focus {
             outline: none;
-            border-color: #3366cc;
+            border-color: var(--btn-primary);
             box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.15);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
         }
 
         .search-box button {
             padding: 8px 16px;
-            background: #3366cc;
+            background: var(--btn-primary);
             color: white;
             border: none;
             border-radius: 4px;
@@ -154,9 +247,10 @@
         }
 
         .search-box button:hover {
-            background: #2a4fa8;
+            background: var(--btn-primary-hover);
         }
 
+        /* ===== КОНТЕЙНЕР ===== */
         .wiki-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -165,49 +259,53 @@
             align-items: flex-start;
         }
 
+        /* ===== БОКОВАЯ ПАНЕЛЬ ===== */
         .sidebar {
             flex: 0 0 260px;
-            background: white;
+            background: var(--bg-sidebar);
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px var(--shadow);
             position: sticky;
             top: 20px;
             max-height: calc(100vh - 120px);
             overflow-y: auto;
+            transition: background 0.3s, box-shadow 0.3s;
         }
 
         .sidebar h3 {
             font-size: 16px;
-            color: #54595d;
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #eaecf0;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .sidebar .synopsis-link {
             display: block;
             padding: 8px 10px;
             margin-bottom: 12px;
-            background: #f0f4ff;
+            background: var(--text-link-hover);
             border-radius: 6px;
-            color: #0645ad;
+            color: var(--text-link);
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-            border-left: 3px solid #e60000;
+            border-left: 3px solid var(--synopsis-border);
             transition: 0.15s;
             cursor: pointer;
         }
 
         .sidebar .synopsis-link:hover {
-            background: #e0e8ff;
+            background: var(--text-link-hover);
+            opacity: 0.8;
         }
 
         .sidebar .synopsis-link.active {
-            background: #d4e4ff;
+            background: var(--text-link-hover);
+            opacity: 0.9;
         }
 
         .sidebar ul {
@@ -221,7 +319,7 @@
         .sidebar ul li a {
             display: block;
             padding: 5px 10px;
-            color: #0645ad;
+            color: var(--text-link);
             text-decoration: none;
             border-radius: 4px;
             font-size: 14px;
@@ -230,28 +328,31 @@
         }
 
         .sidebar ul li a:hover {
-            background: #eaf3ff;
+            background: var(--text-link-hover);
             text-decoration: underline;
         }
 
         .sidebar ul li a.active {
-            background: #d4e4ff;
+            background: var(--text-link-hover);
             font-weight: 600;
         }
 
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
         .content {
             flex: 1;
             min-width: 0;
         }
 
+        /* ===== СТРАНИЦА ===== */
         .page {
-            background: white;
+            background: var(--bg-page);
             border-radius: 8px;
             padding: 30px 35px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px var(--shadow);
             display: none;
             animation: fadeIn 0.25s ease;
             position: relative;
+            transition: background 0.3s, box-shadow 0.3s;
         }
 
         .page.active {
@@ -266,16 +367,17 @@
         .page h2 {
             font-size: 30px;
             font-weight: 400;
-            border-bottom: 1px solid #eaecf0;
+            border-bottom: 1px solid var(--border-light);
             padding-bottom: 6px;
             margin-bottom: 20px;
+            color: var(--text-primary);
         }
 
         .page .edit-toggle-btn {
             display: none;
             float: right;
             padding: 4px 14px;
-            background: #3366cc;
+            background: var(--btn-primary);
             color: white;
             border: none;
             border-radius: 4px;
@@ -290,9 +392,10 @@
         }
 
         .page .edit-toggle-btn:hover {
-            background: #2a4fa8;
+            background: var(--btn-primary-hover);
         }
 
+        /* ===== БЛОКИ НА СТРАНИЦЕ ===== */
         .content-block {
             margin-bottom: 22px;
             clear: both;
@@ -305,8 +408,8 @@
         .content-block .block-title {
             font-size: 18px;
             font-weight: 600;
-            color: #1a1a1a;
-            border-bottom: 2px solid #eaecf0;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-light);
             padding-bottom: 4px;
             margin-bottom: 10px;
         }
@@ -315,7 +418,7 @@
             display: none;
             float: right;
             padding: 2px 12px;
-            background: #3366cc;
+            background: var(--btn-primary);
             color: white;
             border: none;
             border-radius: 3px;
@@ -329,23 +432,24 @@
         }
 
         .content-block .block-title .block-edit-btn:hover {
-            background: #2a4fa8;
+            background: var(--btn-primary-hover);
         }
 
         .content-block .block-content {
             overflow: hidden;
+            color: var(--text-primary);
         }
 
         .content-block .block-content[contenteditable="true"] {
-            background: #fffde7;
+            background: var(--edit-bg);
             padding: 10px 14px;
             border-radius: 6px;
-            border: 2px dashed #f9a825;
+            border: 2px dashed var(--edit-border);
             outline: none;
         }
 
         .content-block .block-content[contenteditable="true"]:focus {
-            border-color: #3366cc;
+            border-color: var(--btn-primary);
         }
 
         .content-block .block-content p {
@@ -356,12 +460,21 @@
             margin-bottom: 0;
         }
 
+        .content-block .block-content strong {
+            color: var(--text-primary);
+        }
+
+        .content-block .block-content em {
+            color: var(--text-secondary);
+        }
+
+        /* ===== КНОПКИ РЕДАКТИРОВАНИЯ ===== */
         .edit-actions {
             display: none;
             gap: 10px;
             margin-top: 16px;
             padding-top: 14px;
-            border-top: 1px solid #eaecf0;
+            border-top: 1px solid var(--border-light);
             flex-wrap: wrap;
             clear: both;
         }
@@ -380,23 +493,24 @@
         }
 
         .edit-actions .save-btn {
-            background: #4caf50;
+            background: var(--btn-success);
             color: white;
         }
 
         .edit-actions .save-btn:hover {
-            background: #388e3c;
+            background: var(--btn-success-hover);
         }
 
         .edit-actions .cancel-btn {
-            background: #e0e0e0;
-            color: #333;
+            background: var(--btn-cancel);
+            color: var(--text-primary);
         }
 
         .edit-actions .cancel-btn:hover {
-            background: #c8c8c8;
+            background: var(--btn-cancel-hover);
         }
 
+        /* ===== АДАПТИВ ===== */
         @media (max-width: 820px) {
             .wiki-container {
                 flex-direction: column;
@@ -422,8 +536,13 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+
+            .header-controls .theme-btn {
+                width: 100%;
+            }
         }
 
+        /* ===== УВЕДОМЛЕНИЕ ===== */
         .notification {
             position: fixed;
             bottom: 30px;
@@ -446,30 +565,31 @@
         }
 
         .notification.success {
-            background: #2e7d32;
+            background: var(--notification-success);
         }
 
         .notification.info {
-            background: #1a237e;
+            background: var(--notification-info);
         }
 
         .notification.warning {
-            background: #e65100;
+            background: var(--notification-warning);
         }
 
         .notification.error {
-            background: #c62828;
+            background: var(--notification-error);
         }
 
+        /* ===== СКРОЛЛБАР ===== */
         .sidebar::-webkit-scrollbar {
             width: 4px;
         }
         .sidebar::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--bg-body);
             border-radius: 4px;
         }
         .sidebar::-webkit-scrollbar-thumb {
-            background: #c1c7cd;
+            background: var(--border-color);
             border-radius: 4px;
         }
     </style>
@@ -487,6 +607,7 @@
         <span class="edit-badge" id="editBadge">Режим редактирования</span>
         <button class="export-btn" id="exportBtn" onclick="exportData()">Экспорт JSON</button>
         <button class="exit-btn" id="exitBtn" onclick="exitEditMode()">Выйти</button>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Тёмная тема</button>
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Найти персонажа..." onkeyup="if(event.key==='Enter') searchCharacter()">
             <button onclick="searchCharacter()">Найти</button>
@@ -780,8 +901,26 @@
     let isEditingBlock = null;
     let clickCount = 0;
     let clickTimer = null;
+    let isDarkTheme = false;
 
     const sortedCharacters = [...charactersData].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+
+    // ===== ТЕМНАЯ ТЕМА =====
+    function toggleTheme() {
+        isDarkTheme = !isDarkTheme;
+        document.body.classList.toggle('dark-theme', isDarkTheme);
+        document.getElementById('themeBtn').textContent = isDarkTheme ? '☀️ Светлая тема' : '🌙 Тёмная тема';
+        localStorage.setItem('wiki_theme', isDarkTheme ? 'dark' : 'light');
+    }
+
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('wiki_theme');
+        if (savedTheme === 'dark') {
+            isDarkTheme = true;
+            document.body.classList.add('dark-theme');
+            document.getElementById('themeBtn').textContent = '☀️ Светлая тема';
+        }
+    }
 
     function renderBlocks(blocks, pageId) {
         let html = '';
@@ -1137,6 +1276,8 @@
 
     // ===== ИНИЦИАЛИЗАЦИЯ =====
     function init() {
+        loadTheme();
+
         const container = document.getElementById('contentArea');
 
         container.innerHTML = renderSynopsis();
@@ -1162,6 +1303,7 @@
     window.exportData = exportData;
     window.exitEditMode = exitEditMode;
     window.showNotification = showNotification;
+    window.toggleTheme = toggleTheme;
 </script>
 
 </body>
