@@ -1104,34 +1104,103 @@
     const sortedCharacters = [...charactersData].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
     // ============================================================
-    // 5. ФУНКЦИЯ АВТО-ССЫЛОК С АЛИАСАМИ
+    // 5. НОВАЯ ФУНКЦИЯ АВТО-ССЫЛОК (БЕЗ КОНФЛИКТОВ)
     // ============================================================
 
     function autoLink(text, currentId) {
-        let result = text;
-        
-        // Создаём карту: вариант имени -> id персонажа
+        // Если текст пустой — возвращаем как есть
+        if (!text) return text;
+
+        // Строим карту: алиас -> id персонажа
         const aliasMap = {};
         sortedCharacters.forEach(char => {
+            // Пропускаем текущего персонажа (не ссылаемся сами на себя)
+            if (char.id === currentId) return;
+            
             const aliases = nameAliases[char.title] || [char.title];
             aliases.forEach(alias => {
-                // Экранируем спецсимволы для regex
                 const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                aliasMap[escapedAlias] = char.id;
+                // Если алиас уже есть в карте — оставляем более длинный вариант
+                if (!aliasMap[escapedAlias] || alias.length > Object.keys(aliasMap).find(k => k === escapedAlias)?.length) {
+                    aliasMap[escapedAlias] = char.id;
+                }
             });
         });
 
-        // Сортируем по длине (чтобы сначала заменять длинные варианты)
+        // Сортируем алиасы по длине (сначала самые длинные)
         const sortedAliases = Object.keys(aliasMap).sort((a, b) => b.length - a.length);
+
+        // Если алиасов нет — возвращаем текст без изменений
+        if (sortedAliases.length === 0) return text;
+
+        // Собираем все позиции для замены
+        let replacements = [];
 
         sortedAliases.forEach(alias => {
             const targetId = aliasMap[alias];
-            if (targetId === currentId) return; // не ссылаемся сами на себя
+            if (!targetId) return;
             
+            // Ищем все вхождения алиаса в тексте
             const regex = new RegExp(`\\b${alias}\\b`, 'g');
-            // Заменяем на ссылку, сохраняя оригинальный текст (алиас)
-            result = result.replace(regex, `<a class="wiki-link" data-target="${targetId}" onclick="navigateTo('${targetId}')">${alias}</a>`);
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                // Проверяем, не находится ли это совпадение внутри HTML-тега
+                const before = text.substring(0, match.index);
+                const after = text.substring(match.index + match[0].length);
+                
+                // Проверяем, не внутри ли мы тега: ищем ближайший < и >
+                const lastOpenTag = before.lastIndexOf('<');
+                const lastCloseTag = before.lastIndexOf('>');
+                const nextOpenTag = after.indexOf('<');
+                const nextCloseTag = after.indexOf('>');
+                
+                // Если мы внутри тега (открыт и не закрыт) — пропускаем
+                if (lastOpenTag > lastCloseTag) {
+                    continue;
+                }
+                
+                // Если после совпадения сразу идёт закрывающий тег — пропускаем (часть тега)
+                if (nextOpenTag === 0) {
+                    continue;
+                }
+
+                replacements.push({
+                    start: match.index,
+                    end: match.index + match[0].length,
+                    alias: match[0],
+                    targetId: targetId
+                });
+            }
         });
+
+        // Если замен нет — возвращаем текст
+        if (replacements.length === 0) return text;
+
+        // Сортируем замены по позиции (чтобы идти слева направо)
+        replacements.sort((a, b) => a.start - b.start);
+
+        // Убираем вложенные замены (если одна замена внутри другой)
+        let filteredReplacements = [];
+        let lastEnd = -1;
+        replacements.forEach(rep => {
+            if (rep.start >= lastEnd) {
+                filteredReplacements.push(rep);
+                lastEnd = rep.end;
+            }
+        });
+
+        // Строим результат
+        let result = '';
+        let currentPos = 0;
+        filteredReplacements.forEach(rep => {
+            // Добавляем текст до замены
+            result += text.substring(currentPos, rep.start);
+            // Добавляем ссылку
+            result += `<a class="wiki-link" data-target="${rep.targetId}" onclick="navigateTo('${rep.targetId}')">${rep.alias}</a>`;
+            currentPos = rep.end;
+        });
+        // Добавляем оставшийся текст
+        result += text.substring(currentPos);
 
         return result;
     }
