@@ -300,55 +300,6 @@
             background: #2a4fa8;
         }
 
-        /* Инфобокс */
-        .infobox {
-            float: right;
-            width: 240px;
-            margin: 0 0 16px 20px;
-            background: #f8f9fa;
-            border: 1px solid #eaecf0;
-            border-radius: 6px;
-            padding: 12px 14px;
-            font-size: 13px;
-        }
-
-        .infobox h4 {
-            font-size: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eaecf0;
-            padding-bottom: 6px;
-            margin-bottom: 8px;
-        }
-
-        .infobox .row {
-            display: flex;
-            padding: 3px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .infobox .row:last-child {
-            border-bottom: none;
-        }
-
-        .infobox .row .label {
-            font-weight: 600;
-            width: 70px;
-            flex-shrink: 0;
-            color: #54595d;
-            font-size: 12px;
-        }
-
-        .infobox .row .value {
-            flex: 1;
-            font-size: 13px;
-        }
-
-        .infobox .row .value[contenteditable="true"] {
-            background: #fffde7;
-            border-radius: 3px;
-            padding: 0 4px;
-        }
-
         /* ===== БЛОКИ НА СТРАНИЦЕ ===== */
         .content-block {
             margin-bottom: 22px;
@@ -413,6 +364,19 @@
             margin-bottom: 0;
         }
 
+        /* Ссылки внутри текста */
+        .page a.wiki-link {
+            color: #0645ad;
+            text-decoration: none;
+            border-bottom: 1px dotted #a2a9b1;
+            cursor: pointer;
+        }
+
+        .page a.wiki-link:hover {
+            border-bottom: 1px solid #0645ad;
+            text-decoration: none;
+        }
+
         /* ===== КНОПКИ РЕДАКТИРОВАНИЯ ===== */
         .edit-actions {
             display: none;
@@ -466,12 +430,6 @@
                 position: static;
                 max-height: 300px;
                 width: 100%;
-            }
-
-            .infobox {
-                float: none;
-                width: 100%;
-                margin: 0 0 16px 0;
             }
 
             .header {
@@ -606,18 +564,13 @@
 
 <script>
     // ============================================================
-    // 1. ДАННЫЕ — ВСЕ ПЕРСОНАЖИ С БЛОКАМИ
+    // 1. ДАННЫЕ — ВСЕ ПЕРСОНАЖИ С БЛОКАМИ (без инфобоксов)
     // ============================================================
 
     const charactersData = [
         {
             id: "adin",
             title: "Адин",
-            category: "Персонажи",
-            infobox: {
-                "Команда": "Red Bull",
-                "Стиль": "агрессивный"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -640,12 +593,6 @@
         {
             id: "albert",
             title: "Альбер Кроссман",
-            category: "Персонажи",
-            infobox: {
-                "Команда": "Ferrari",
-                "Титулы": "4× чемпион мира",
-                "Стиль": "плавный, стабильный"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -672,11 +619,6 @@
         {
             id: "roman",
             title: "Ан Ро Ман",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "комментатор",
-                "Особенность": "двойник Альбера"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -703,11 +645,6 @@
         {
             id: "bad",
             title: "Бад",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "комментатор",
-                "Стиль": "провокационный"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -726,10 +663,6 @@
         {
             id: "basen",
             title: "Басен",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "сын Виолан"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -744,10 +677,6 @@
         {
             id: "bikros",
             title: "Бикрос",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "повар Кейла"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -762,11 +691,6 @@
         {
             id: "valentino",
             title: "Валентино",
-            category: "Персонажи",
-            infobox: {
-                "Команда": "Red Bull",
-                "Роль": "второй пилот"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -781,11 +705,6 @@
         {
             id: "violan",
             title: "Виолан",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "преподаватель фехтования",
-                "Дети": "Лили и Басен"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -808,10 +727,6 @@
         {
             id: "vitira",
             title: "Витира",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "менеджер Williams"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -830,10 +745,6 @@
         {
             id: "derut",
             title: "Дерут Хенитьюз",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "отец Кейла"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -848,11 +759,6 @@
         {
             id: "jopis",
             title: "Джопис",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "коллега Ро Мана",
-                "Особенность": "носит кастет"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -875,10 +781,6 @@
         {
             id: "jurtemz",
             title: "Джур Хенитьюз (Темз)",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "мать Кейла (покойная)"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -893,12 +795,6 @@
         {
             id: "kayle",
             title: "Кейл Хенитьюз",
-            category: "Персонажи",
-            infobox: {
-                "Команда": "Ferrari",
-                "Возраст": "18 лет",
-                "Стиль": "агрессивный, рискованный"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -925,11 +821,6 @@
         {
             id: "roksu",
             title: "Ким Рок Су",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "тренер Кейла",
-                "Бывшая команда": "Ferrari"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -952,10 +843,6 @@
         {
             id: "klope",
             title: "Клопе Секка",
-            category: "Персонажи",
-            infobox: {
-                "Команда": "Mercedes"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -966,10 +853,6 @@
         {
             id: "lili",
             title: "Лили",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "дочь Виолан"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -984,10 +867,6 @@
         {
             id: "suheq",
             title: "Ли Су Хек",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "партнёр Рок Су"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1002,10 +881,6 @@
         {
             id: "loc",
             title: "Лок",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "друг Кейла"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1020,10 +895,6 @@
         {
             id: "ollien",
             title: "Оллиен",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "опекун Раона"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1038,11 +909,6 @@
         {
             id: "on",
             title: "Он",
-            category: "Персонажи",
-            infobox: {
-                "Возраст": "10 лет",
-                "Роль": "подопечная Рок Су"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1057,10 +923,6 @@
         {
             id: "paseton",
             title: "Пасетон",
-            category: "Персонажи",
-            infobox: {
-                "Команда": "Williams"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1075,11 +937,6 @@
         {
             id: "raon",
             title: "Раон",
-            category: "Персонажи",
-            infobox: {
-                "Категория": "Формула-2",
-                "Возраст": "15 лет"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1098,10 +955,6 @@
         {
             id: "ron",
             title: "Рон",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "попечитель Кейла"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1116,10 +969,6 @@
         {
             id: "rosalin",
             title: "Розалин",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "менеджер Ferrari"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1138,10 +987,6 @@
         {
             id: "chonsu",
             title: "Чхве Чон Су",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "партнёр Рок Су"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1156,10 +1001,6 @@
         {
             id: "chwehan",
             title: "Чхве Хан",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "инженер Ferrari"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1178,10 +1019,6 @@
         {
             id: "sheritt",
             title: "Шеритт",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "мать Раона (покойная)"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1196,10 +1033,6 @@
         {
             id: "eruhaben",
             title: "Эрухабен",
-            category: "Персонажи",
-            infobox: {
-                "Роль": "директор FIA"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1218,11 +1051,6 @@
         {
             id: "hon",
             title: "Хон",
-            category: "Персонажи",
-            infobox: {
-                "Возраст": "10 лет",
-                "Роль": "подопечный Рок Су"
-            },
             blocks: [
                 {
                     title: "Общая информация",
@@ -1288,7 +1116,9 @@
         sorted.forEach(char => {
             if (char.id === currentId) return;
             const name = char.title;
-            const regex = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+            // Экранируем спецсимволы для regex
+            const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`\\b${escapedName}\\b`, 'g');
             result = result.replace(regex, `<a class="wiki-link" data-target="${char.id}" onclick="navigateTo('${char.id}')">${name}</a>`);
         });
         return result;
@@ -1321,7 +1151,6 @@
                     <button class="edit-toggle-btn" onclick="togglePageEdit('synopsis')">Редактировать</button>
                 </h2>
                 ${blocksHTML}
-                <div class="categories">Основной сюжет вселенной</div>
                 <div class="edit-actions">
                     <button class="save-btn" onclick="savePage('synopsis')">Сохранить</button>
                     <button class="cancel-btn" onclick="cancelPageEdit('synopsis')">Отмена</button>
@@ -1331,15 +1160,6 @@
     }
 
     function renderPage(char) {
-        let infoboxHTML = '';
-        if (char.infobox) {
-            infoboxHTML = `<div class="infobox"><h4>${char.title}</h4>`;
-            for (const [label, value] of Object.entries(char.infobox)) {
-                infoboxHTML += `<div class="row"><span class="label">${label}</span><span class="value" data-field="${label}">${value}</span></div>`;
-            }
-            infoboxHTML += `</div>`;
-        }
-
         const blocksHTML = renderBlocks(char.blocks, char.id);
 
         return `
@@ -1348,9 +1168,7 @@
                     ${char.title}
                     <button class="edit-toggle-btn" onclick="togglePageEdit('${char.id}')">Редактировать</button>
                 </h2>
-                ${infoboxHTML}
                 ${blocksHTML}
-                <div class="categories">${char.category}</div>
                 <div class="edit-actions">
                     <button class="save-btn" onclick="savePage('${char.id}')">Сохранить</button>
                     <button class="cancel-btn" onclick="cancelPageEdit('${char.id}')">Отмена</button>
@@ -1472,12 +1290,6 @@
             el.contentEditable = true;
         });
 
-        // Инфобокс
-        page.querySelectorAll('.infobox .row .value').forEach(el => {
-            el.dataset.original = el.textContent;
-            el.contentEditable = true;
-        });
-
         if (actions) actions.classList.add('active');
 
         const btn = page.querySelector('.edit-toggle-btn');
@@ -1492,18 +1304,9 @@
 
         const actions = page.querySelector('.edit-actions');
 
-        // Восстанавливаем блоки
         page.querySelectorAll('.block-content').forEach(el => {
             if (el.dataset.original) {
                 el.innerHTML = el.dataset.original;
-                el.dataset.original = '';
-            }
-            el.contentEditable = false;
-        });
-
-        page.querySelectorAll('.infobox .row .value').forEach(el => {
-            if (el.dataset.original) {
-                el.textContent = el.dataset.original;
                 el.dataset.original = '';
             }
             el.contentEditable = false;
@@ -1518,7 +1321,7 @@
     }
 
     // ============================================================
-    // 7. РЕДАКТИРОВАНИЕ БЛОКА (по одному блоку)
+    // 7. РЕДАКТИРОВАНИЕ БЛОКА
     // ============================================================
 
     function toggleBlockEdit(pageId, blockIndex) {
@@ -1551,7 +1354,6 @@
         const btn = block.querySelector('.block-edit-btn');
         if (btn) btn.textContent = 'Сохранить';
 
-        // Добавляем кнопки сохранения для этого блока
         const saveBlockBtn = document.createElement('button');
         saveBlockBtn.textContent = 'Сохранить блок';
         saveBlockBtn.className = 'save-btn';
@@ -1584,7 +1386,6 @@
 
         const content = block.querySelector('.block-content');
 
-        // Сохраняем в данные
         const char = sortedCharacters.find(c => c.id === pageId);
         if (char && char.blocks[blockIndex]) {
             char.blocks[blockIndex].content = content.innerHTML;
@@ -1592,7 +1393,6 @@
             synopsisData.blocks[blockIndex].content = content.innerHTML;
         }
 
-        // Обновляем ссылки
         const newContent = autoLink(content.innerHTML, pageId);
         content.innerHTML = newContent;
 
@@ -1624,7 +1424,7 @@
     }
 
     // ============================================================
-    // 8. СОХРАНЕНИЕ СТРАНИЦЫ (для page edit)
+    // 8. СОХРАНЕНИЕ СТРАНИЦЫ
     // ============================================================
 
     function savePage(pageId) {
@@ -1633,7 +1433,6 @@
 
         const char = sortedCharacters.find(c => c.id === pageId);
 
-        // Сохраняем блоки
         const blockContents = page.querySelectorAll('.block-content');
         if (char) {
             blockContents.forEach((el, index) => {
@@ -1649,15 +1448,6 @@
             });
         }
 
-        // Сохраняем инфобокс
-        page.querySelectorAll('.infobox .row .value').forEach(el => {
-            const label = el.dataset.field;
-            if (char && char.infobox && label) {
-                char.infobox[label] = el.textContent.trim();
-            }
-        });
-
-        // Обновляем ссылки
         blockContents.forEach((el, index) => {
             const newContent = autoLink(el.innerHTML, pageId);
             el.innerHTML = newContent;
