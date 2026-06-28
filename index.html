@@ -447,45 +447,6 @@
             }
         }
 
-        /* Стиль для страницы "Сюжет" */
-        .page .synopsis-block {
-            font-style: italic;
-            color: #444;
-            background: #f8f9fa;
-            padding: 16px 20px;
-            border-left: 4px solid #e60000;
-            margin-bottom: 18px;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .page .synopsis-block h3 {
-            font-style: normal;
-            color: #222;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .page .synopsis-block p {
-            margin-bottom: 8px;
-        }
-
-        .page .synopsis-block p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* ===== СКРОЛЛБАР ===== */
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #c1c7cd;
-            border-radius: 4px;
-        }
-
         /* ===== УВЕДОМЛЕНИЕ ===== */
         .notification {
             position: fixed;
@@ -564,7 +525,7 @@
 
 <script>
     // ============================================================
-    // 1. ДАННЫЕ — ВСЕ ПЕРСОНАЖИ С БЛОКАМИ (без инфобоксов)
+    // 1. ДАННЫЕ — ВСЕ ПЕРСОНАЖИ С БЛОКАМИ
     // ============================================================
 
     const charactersData = [
@@ -1095,7 +1056,43 @@
     };
 
     // ============================================================
-    // 3. ОСНОВНАЯ ЛОГИКА
+    // 3. АЛИАСЫ (ВАРИАНТЫ ИМЁН ДЛЯ ПОИСКА)
+    // ============================================================
+
+    const nameAliases = {
+        "Адин": ["Адин"],
+        "Альбер Кроссман": ["Альбер Кроссман", "Альбер", "Кроссман"],
+        "Ан Ро Ман": ["Ан Ро Ман", "Ро Ман"],
+        "Бад": ["Бад"],
+        "Басен": ["Басен"],
+        "Бикрос": ["Бикрос"],
+        "Валентино": ["Валентино"],
+        "Виолан": ["Виолан"],
+        "Витира": ["Витира"],
+        "Дерут Хенитьюз": ["Дерут Хенитьюз", "Дерут"],
+        "Джопис": ["Джопис"],
+        "Джур Хенитьюз (Темз)": ["Джур Хенитьюз", "Джур Темз", "Джур"],
+        "Кейл Хенитьюз": ["Кейл Хенитьюз", "Кейл", "Кейла"],
+        "Ким Рок Су": ["Ким Рок Су", "Рок Су"],
+        "Клопе Секка": ["Клопе Секка", "Клопе"],
+        "Лили": ["Лили"],
+        "Ли Су Хек": ["Ли Су Хек", "Су Хек", "Су Хеку"],
+        "Лок": ["Лок"],
+        "Оллиен": ["Оллиен"],
+        "Он": ["Он"],
+        "Пасетон": ["Пасетон"],
+        "Раон": ["Раон"],
+        "Розалин": ["Розалин"],
+        "Рон": ["Рон"],
+        "Чхве Чон Су": ["Чхве Чон Су", "Чон Су"],
+        "Чхве Хан": ["Чхве Хан", "Хан"],
+        "Шеритт": ["Шеритт"],
+        "Эрухабен": ["Эрухабен"],
+        "Хон": ["Хон"]
+    };
+
+    // ============================================================
+    // 4. ОСНОВНАЯ ЛОГИКА
     // ============================================================
 
     let isEditMode = false;
@@ -1107,22 +1104,44 @@
     const sortedCharacters = [...charactersData].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
     // ============================================================
-    // 4. РЕНДЕР
+    // 5. ФУНКЦИЯ АВТО-ССЫЛОК С АЛИАСАМИ
     // ============================================================
 
     function autoLink(text, currentId) {
         let result = text;
-        const sorted = [...sortedCharacters].sort((a, b) => b.title.length - a.title.length);
-        sorted.forEach(char => {
-            if (char.id === currentId) return;
-            const name = char.title;
-            // Экранируем спецсимволы для regex
-            const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`\\b${escapedName}\\b`, 'g');
-            result = result.replace(regex, `<a class="wiki-link" data-target="${char.id}" onclick="navigateTo('${char.id}')">${name}</a>`);
+        
+        // Создаём карту: вариант имени -> id персонажа
+        const aliasMap = {};
+        sortedCharacters.forEach(char => {
+            const aliases = nameAliases[char.title] || [char.title];
+            aliases.forEach(alias => {
+                // Экранируем спецсимволы для regex
+                const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                aliasMap[escapedAlias] = char.id;
+            });
         });
+
+        // Сортируем по длине (чтобы сначала заменять длинные варианты)
+        const sortedAliases = Object.keys(aliasMap).sort((a, b) => b.length - a.length);
+
+        sortedAliases.forEach(alias => {
+            const targetId = aliasMap[alias];
+            if (targetId === currentId) return; // не ссылаемся сами на себя
+            
+            const regex = new RegExp(`\\b${alias}\\b`, 'g');
+            // Находим полное имя персонажа для отображения
+            const char = sortedCharacters.find(c => c.id === targetId);
+            const displayName = char ? char.title : alias;
+            
+            result = result.replace(regex, `<a class="wiki-link" data-target="${targetId}" onclick="navigateTo('${targetId}')">${displayName}</a>`);
+        });
+
         return result;
     }
+
+    // ============================================================
+    // 6. РЕНДЕР
+    // ============================================================
 
     function renderBlocks(blocks, pageId, isSynopsis = false) {
         let html = '';
@@ -1215,7 +1234,7 @@
     }
 
     // ============================================================
-    // 5. 7 КЛИКОВ
+    // 7. 7 КЛИКОВ
     // ============================================================
 
     document.getElementById('logoArea').addEventListener('click', function() {
@@ -1262,7 +1281,7 @@
     }
 
     // ============================================================
-    // 6. РЕДАКТИРОВАНИЕ СТРАНИЦЫ
+    // 8. РЕДАКТИРОВАНИЕ СТРАНИЦЫ
     // ============================================================
 
     function togglePageEdit(pageId) {
@@ -1284,7 +1303,6 @@
 
         const actions = page.querySelector('.edit-actions');
 
-        // Сохраняем оригиналы для всех блоков
         page.querySelectorAll('.block-content').forEach(el => {
             el.dataset.original = el.innerHTML;
             el.contentEditable = true;
@@ -1321,7 +1339,7 @@
     }
 
     // ============================================================
-    // 7. РЕДАКТИРОВАНИЕ БЛОКА
+    // 9. РЕДАКТИРОВАНИЕ БЛОКА
     // ============================================================
 
     function toggleBlockEdit(pageId, blockIndex) {
@@ -1424,7 +1442,7 @@
     }
 
     // ============================================================
-    // 8. СОХРАНЕНИЕ СТРАНИЦЫ
+    // 10. СОХРАНЕНИЕ СТРАНИЦЫ
     // ============================================================
 
     function savePage(pageId) {
@@ -1459,7 +1477,7 @@
     }
 
     // ============================================================
-    // 9. ЭКСПОРТ JSON
+    // 11. ЭКСПОРТ JSON
     // ============================================================
 
     function exportData() {
@@ -1484,7 +1502,7 @@
     }
 
     // ============================================================
-    // 10. ПОИСК
+    // 12. ПОИСК
     // ============================================================
 
     function searchCharacter() {
@@ -1501,7 +1519,7 @@
     }
 
     // ============================================================
-    // 11. УВЕДОМЛЕНИЯ
+    // 13. УВЕДОМЛЕНИЯ
     // ============================================================
 
     function showNotification(message, type = 'info') {
@@ -1515,7 +1533,7 @@
     }
 
     // ============================================================
-    // 12. ИНИЦИАЛИЗАЦИЯ
+    // 14. ИНИЦИАЛИЗАЦИЯ
     // ============================================================
 
     function init() {
@@ -1543,7 +1561,7 @@
     document.addEventListener('DOMContentLoaded', init);
 
     // ============================================================
-    // 13. ГЛОБАЛЬНЫЕ ФУНКЦИИ
+    // 15. ГЛОБАЛЬНЫЕ ФУНКЦИИ
     // ============================================================
 
     window.navigateTo = navigateTo;
