@@ -50,13 +50,6 @@
             background: #f0f0f0;
         }
 
-        .header .logo-area .click-counter {
-            font-size: 12px;
-            color: #999;
-            min-width: 30px;
-            text-align: center;
-        }
-
         .header h1 {
             font-size: 28px;
             font-weight: 300;
@@ -559,12 +552,11 @@
     <div class="logo-area" id="logoArea">
         <span style="font-size:24px;">🏁</span>
         <h1><span>Гоночная</span> АУ · Вики</h1>
-        <span class="click-counter" id="clickCounter"></span>
     </div>
     <div class="header-controls">
-        <span class="edit-badge" id="editBadge">✎ Режим редактирования</span>
-        <button class="export-btn" id="exportBtn" onclick="exportData()">📤 Экспорт JSON</button>
-        <button class="exit-btn" id="exitBtn" onclick="exitEditMode()">🔒 Выйти</button>
+        <span class="edit-badge" id="editBadge">Режим редактирования</span>
+        <button class="export-btn" id="exportBtn" onclick="exportData()">Экспорт JSON</button>
+        <button class="exit-btn" id="exitBtn" onclick="exitEditMode()">Выйти</button>
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Найти персонажа..." onkeyup="if(event.key==='Enter') searchCharacter()">
             <button onclick="searchCharacter()">Найти</button>
@@ -577,8 +569,8 @@
 
     <!-- Боковая панель -->
     <nav class="sidebar" id="sidebar">
-        <a class="synopsis-link" data-target="synopsis" onclick="navigateTo('synopsis')">📖 Сюжет</a>
-        <h3>🏎️ Персонажи</h3>
+        <a class="synopsis-link" data-target="synopsis" onclick="navigateTo('synopsis')">Сюжет</a>
+        <h3>Персонажи</h3>
         <ul id="navList"></ul>
     </nav>
 
@@ -1070,7 +1062,7 @@
         title: "Сюжет",
         text: `
             <div class="synopsis-block">
-                <h3>🏁 Истоки страсти</h3>
+                <h3>Истоки страсти</h3>
                 <p>С самого детства гонки были неотъемлемой частью жизни Кейла Хенитьюза. Его мать, Джур Темз,
                 происходила из именитой семьи гонщиков, и именно она привила сыну любовь к скорости и адреналину,
                 отдав его в секцию картинга. После её безвременной кончины Кейл посвятил себя исключительно гонкам,
@@ -1078,14 +1070,14 @@
             </div>
 
             <div class="synopsis-block">
-                <h3>🏁 Становление чемпиона</h3>
+                <h3>Становление чемпиона</h3>
                 <p>В десятилетнем возрасте Кейл познакомился с Рок Су, бывшим гонщиком. Между ними завязалось общение,
                 которое переросло в дружеско-семейные отношения. Кейл стал проводить выходные в доме Рок Су, помогая
                 ему и его семье (Су Хеку и Чон Су) на ферме. Заметив талант, Рок Су взял на себя роль тренера и наставника.</p>
             </div>
 
             <div class="synopsis-block">
-                <h3>🏁 Формула-2 и первый соперник</h3>
+                <h3>Формула-2 и первый соперник</h3>
                 <p>Пройдя Ф4 и Ф3, в Формуле-2 Кейл стал напарником Адина — пилота с агрессивным стилем. Адин за сезон
                 проложил себе путь в Формулу-1, став главным кошмаром для Альбера Кроссмана.</p>
                 <p>Блистательные результаты Кейла не остались незамеченными — спустя год он попал в Формулу-1, где
@@ -1093,7 +1085,7 @@
             </div>
 
             <div class="synopsis-block">
-                <h3>🏁 Хаос в Формуле-1</h3>
+                <h3>Хаос в Формуле-1</h3>
                 <p>Для Кроссмана, уже измученного противостоянием с Адином, появление «младшей версии» — как окрестили
                 Кейла в СМИ — стало последней каплей. Их отношения не заладились с первой встречи, когда Кейл по
                 неосторожности пролил на Альбера горячий американо.</p>
@@ -1144,12 +1136,12 @@
             <div class="page active" data-id="synopsis">
                 <h2>
                     ${synopsisData.title}
-                    <button class="edit-toggle-btn" onclick="toggleEdit('synopsis')">✎ Редактировать</button>
+                    <button class="edit-toggle-btn" onclick="toggleEdit('synopsis')">Редактировать</button>
                 </h2>
                 <div class="text-content">${textHTML}</div>
-                <div class="categories">📖 Основной сюжет вселенной</div>
+                <div class="categories">Основной сюжет вселенной</div>
                 <div class="edit-actions">
-                    <button class="save-btn" onclick="savePage('synopsis')">💾 Сохранить</button>
+                    <button class="save-btn" onclick="savePage('synopsis')">Сохранить</button>
                     <button class="cancel-btn" onclick="cancelEdit('synopsis')">Отмена</button>
                 </div>
             </div>
@@ -1172,13 +1164,13 @@
             <div class="page" data-id="${char.id}">
                 <h2>
                     ${char.title}
-                    <button class="edit-toggle-btn" onclick="toggleEdit('${char.id}')">✎ Редактировать</button>
+                    <button class="edit-toggle-btn" onclick="toggleEdit('${char.id}')">Редактировать</button>
                 </h2>
                 ${infoboxHTML}
                 <div class="text-content">${textHTML}</div>
-                <div class="categories">🏷️ ${char.category}</div>
+                <div class="categories">${char.category}</div>
                 <div class="edit-actions">
-                    <button class="save-btn" onclick="savePage('${char.id}')">💾 Сохранить</button>
+                    <button class="save-btn" onclick="savePage('${char.id}')">Сохранить</button>
                     <button class="cancel-btn" onclick="cancelEdit('${char.id}')">Отмена</button>
                 </div>
             </div>
@@ -1225,18 +1217,14 @@
 
     document.getElementById('logoArea').addEventListener('click', function() {
         clickCount++;
-        const counter = document.getElementById('clickCounter');
-        counter.textContent = clickCount < 7 ? `${clickCount}/7` : '✨';
 
         clearTimeout(clickTimer);
         clickTimer = setTimeout(() => {
             clickCount = 0;
-            counter.textContent = '';
         }, 2000);
 
         if (clickCount >= 7) {
             clickCount = 0;
-            counter.textContent = '✅';
             activateEditMode();
         }
     });
@@ -1253,7 +1241,7 @@
             btn.classList.add('active');
         });
 
-        showNotification('🔓 Режим редактирования активирован!', 'success');
+        showNotification('Режим редактирования активирован', 'success');
     }
 
     function exitEditMode() {
@@ -1273,7 +1261,7 @@
             btn.classList.remove('active');
         });
 
-        showNotification('🔒 Режим редактирования выключен', 'info');
+        showNotification('Режим редактирования выключен', 'info');
     }
 
     // ============================================================
@@ -1282,7 +1270,7 @@
 
     function toggleEdit(pageId) {
         if (!isEditMode) {
-            showNotification('⚠️ Сначала активируйте режим редактирования (7 кликов по логотипу)', 'warning');
+            showNotification('Сначала активируйте режим редактирования (7 кликов по логотипу)', 'warning');
             return;
         }
 
@@ -1301,10 +1289,8 @@
         const content = page.querySelector('.text-content');
         const actions = page.querySelector('.edit-actions');
 
-        // Сохраняем оригинал
         content.dataset.original = content.innerHTML;
 
-        // Инфобокс — делаем редактируемыми значения
         page.querySelectorAll('.infobox .row .value').forEach(el => {
             el.dataset.original = el.textContent;
             el.contentEditable = true;
@@ -1315,9 +1301,8 @@
 
         if (actions) actions.classList.add('active');
 
-        // Меняем кнопку
         const btn = page.querySelector('.edit-toggle-btn');
-        if (btn) btn.textContent = '❌ Отменить';
+        if (btn) btn.textContent = 'Отменить';
 
         isEditingPage = pageId;
     }
@@ -1329,7 +1314,6 @@
         const content = page.querySelector('.text-content');
         const actions = page.querySelector('.edit-actions');
 
-        // Сохраняем текст
         const char = sortedCharacters.find(c => c.id === pageId);
         if (char) {
             char.text = content.innerHTML;
@@ -1337,7 +1321,6 @@
             synopsisData.text = content.innerHTML;
         }
 
-        // Сохраняем инфобокс
         page.querySelectorAll('.infobox .row .value').forEach(el => {
             const label = el.dataset.field;
             if (char && char.infobox && label) {
@@ -1345,7 +1328,6 @@
             }
         });
 
-        // Выходим из режима редактирования
         content.contentEditable = false;
         content.dataset.original = '';
         if (actions) actions.classList.remove('active');
@@ -1356,15 +1338,14 @@
         });
 
         const btn = page.querySelector('.edit-toggle-btn');
-        if (btn) btn.textContent = '✎ Редактировать';
+        if (btn) btn.textContent = 'Редактировать';
 
         isEditingPage = null;
 
-        // Обновляем ссылки
         const newContent = autoLink(content.innerHTML, pageId);
         content.innerHTML = newContent;
 
-        showNotification('💾 Страница сохранена! Не забудьте экспортировать JSON.', 'success');
+        showNotification('Страница сохранена! Не забудьте экспортировать JSON.', 'success');
     }
 
     function cancelEdit(pageId) {
@@ -1374,7 +1355,6 @@
         const content = page.querySelector('.text-content');
         const actions = page.querySelector('.edit-actions');
 
-        // Восстанавливаем оригинал
         if (content.dataset.original) {
             content.innerHTML = content.dataset.original;
             content.dataset.original = '';
@@ -1392,13 +1372,13 @@
         });
 
         const btn = page.querySelector('.edit-toggle-btn');
-        if (btn) btn.textContent = '✎ Редактировать';
+        if (btn) btn.textContent = 'Редактировать';
 
         if (isEditingPage === pageId) {
             isEditingPage = null;
         }
 
-        showNotification('❌ Редактирование отменено', 'info');
+        showNotification('Редактирование отменено', 'info');
     }
 
     // ============================================================
@@ -1406,18 +1386,15 @@
     // ============================================================
 
     function exportData() {
-        // Собираем данные
         const data = {
             characters: sortedCharacters,
             synopsis: synopsisData
         };
 
-        // Создаём JSON
         const json = JSON.stringify(data, null, 2);
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
 
-        // Скачиваем
         const a = document.createElement('a');
         a.href = url;
         a.download = 'data.json';
@@ -1426,7 +1403,7 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        showNotification('📥 data.json скачан! Замените файл в репозитории.', 'success');
+        showNotification('data.json скачан! Замените файл в репозитории.', 'success');
     }
 
     // ============================================================
@@ -1442,7 +1419,7 @@
             navigateTo(found.id);
             document.getElementById('searchInput').value = '';
         } else {
-            showNotification(`❌ Персонаж "${query}" не найден`, 'error');
+            showNotification(`Персонаж "${query}" не найден`, 'error');
         }
     }
 
@@ -1467,10 +1444,8 @@
     function init() {
         const container = document.getElementById('contentArea');
 
-        // Сюжет
         container.innerHTML = renderSynopsis();
 
-        // Персонажи
         sortedCharacters.forEach(char => {
             container.innerHTML += renderPage(char);
         });
@@ -1478,7 +1453,6 @@
         buildNav();
         navigateTo('synopsis');
 
-        // Обработка кликов по ссылкам внутри контента
         container.addEventListener('click', (e) => {
             const link = e.target.closest('.wiki-link');
             if (link) {
@@ -1487,9 +1461,6 @@
                 if (targetId) navigateTo(targetId);
             }
         });
-
-        // Проверяем, не сохранён ли режим редактирования в localStorage
-        // (опционально — можно сохранять состояние)
     }
 
     document.addEventListener('DOMContentLoaded', init);
