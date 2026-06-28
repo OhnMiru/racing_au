@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гоночная АУ — Вики</title>
+    <style>
+        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #f6f6f6;
+            color: #222;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* ===== ШАПКА ===== */
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #a2a9b1;
+            padding-bottom: 15px;
+            cursor: default;
+            user-select: none;
+        }
+
+        .header .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .header .logo-area:hover {
+            background: #f0f0f0;
+        }
+
+        .header .logo-area .click-counter {
+            font-size: 12px;
+            color: #999;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: #1a1a1a;
+            pointer-events: none;
+        }
+
+        .header h1 span {
+            font-weight: 700;
+            color: #e60000;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-controls .edit-badge {
+            display: none;
+            font-size: 12px;
+            color: #2e7d32;
+            background: #e8f5e9;
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1px solid #a5d6a7;
+        }
+
+        .header-controls .edit-badge.active {
+            display: inline-block;
+        }
+
+        .header-controls .export-btn {
+            display: none;
+            padding: 6px 16px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .header-controls .export-btn.active {
+            display: inline-block;
+        }
+
+        .header-controls .export-btn:hover {
+            background: #1b5e20;
+        }
+
+        .header-controls .exit-btn {
+            display: none;
+            padding: 6px 16px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .header-controls .exit-btn.active {
+            display: inline-block;
+        }
+
+        .header-controls .exit-btn:hover {
+            background: #b71c1c;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-box input {
+            padding: 8px 14px;
+            border: 1px solid #a2a9b1;
+            border-radius: 4px;
+            font-size: 15px;
+            width: 200px;
+            background: white;
+            transition: 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3366cc;
+            box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.15);
+        }
+
+        .search-box button {
+            padding: 8px 16px;
+            background: #3366cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .search-box button:hover {
+            background: #2a4fa8;
+        }
+
+        /* ===== КОНТЕЙНЕР ===== */
+        .wiki-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* ===== БОКОВАЯ ПАНЕЛЬ ===== */
+        .sidebar {
+            flex: 0 0 260px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            font-size: 16px;
+            color: #54595d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .sidebar .synopsis-link {
+            display: block;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            background: #f0f4ff;
+            border-radius: 6px;
+            color: #0645ad;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border-left: 3px solid #e60000;
+            transition: 0.15s;
+            cursor: pointer;
+        }
+
+        .sidebar .synopsis-link:hover {
+            background: #e0e8ff;
+        }
+
+        .sidebar .synopsis-link.active {
+            background: #d4e4ff;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 2px;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 5px 10px;
+            color: #0645ad;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: 0.15s;
+            cursor: pointer;
+        }
+
+        .sidebar ul li a:hover {
+            background: #eaf3ff;
+            text-decoration: underline;
+        }
+
+        .sidebar ul li a.active {
+            background: #d4e4ff;
+            font-weight: 600;
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* ===== СТРАНИЦА ===== */
+        .page {
+            background: white;
+            border-radius: 8px;
+            padding: 30px 35px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            display: none;
+            animation: fadeIn 0.25s ease;
+            position: relative;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page h2 {
+            font-size: 30px;
+            font-weight: 400;
+            border-bottom: 1px solid #eaecf0;
+            padding-bottom: 6px;
+            margin-bottom: 20px;
+        }
+
+        .page .edit-toggle-btn {
+            display: none;
+            float: right;
+            padding: 4px 14px;
+            background: #3366cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+            margin-left: 10px;
+        }
+
+        .page .edit-toggle-btn.active {
+            display: inline-block;
+        }
+
+        .page .edit-toggle-btn:hover {
+            background: #2a4fa8;
+        }
+
+        /* Инфобокс */
+        .infobox {
+            float: right;
+            width: 240px;
+            margin: 0 0 16px 20px;
+            background: #f8f9fa;
+            border: 1px solid #eaecf0;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 13px;
+        }
+
+        .infobox h4 {
+            font-size: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eaecf0;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+        }
+
+        .infobox .row {
+            display: flex;
+            padding: 3px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .infobox .row:last-child {
+            border-bottom: none;
+        }
+
+        .infobox .row .label {
+            font-weight: 600;
+            width: 70px;
+            flex-shrink: 0;
+            color: #54595d;
+            font-size: 12px;
+        }
+
+        .infobox .row .value {
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .infobox .row .value[contenteditable="true"] {
+            background: #fffde7;
+            border-radius: 3px;
+            padding: 0 4px;
+        }
+
+        /* Текст страницы */
+        .page .text-content {
+            overflow: hidden;
+            min-height: 50px;
+        }
+
+        .page .text-content[contenteditable="true"] {
+            background: #fffde7;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 2px dashed #f9a825;
+            outline: none;
+        }
+
+        .page .text-content[contenteditable="true"]:focus {
+            border-color: #3366cc;
+        }
+
+        /* Ссылки внутри текста */
+        .page a.wiki-link {
+            color: #0645ad;
+            text-decoration: none;
+            border-bottom: 1px dotted #a2a9b1;
+            cursor: pointer;
+        }
+
+        .page a.wiki-link:hover {
+            border-bottom: 1px solid #0645ad;
+            text-decoration: none;
+        }
+
+        /* Категории */
+        .categories {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #eaecf0;
+            font-size: 13px;
+            color: #54595d;
+        }
+
+        /* ===== КНОПКИ РЕДАКТИРОВАНИЯ ===== */
+        .edit-actions {
+            display: none;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #eaecf0;
+            flex-wrap: wrap;
+        }
+
+        .edit-actions.active {
+            display: flex;
+        }
+
+        .edit-actions button {
+            padding: 6px 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .edit-actions .save-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .edit-actions .save-btn:hover {
+            background: #388e3c;
+        }
+
+        .edit-actions .cancel-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .edit-actions .cancel-btn:hover {
+            background: #c8c8c8;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 820px) {
+            .wiki-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                flex: auto;
+                position: static;
+                max-height: 300px;
+                width: 100%;
+            }
+
+            .infobox {
+                float: none;
+                width: 100%;
+                margin: 0 0 16px 0;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Стиль для страницы "Сюжет" */
+        .page .synopsis-block {
+            font-style: italic;
+            color: #444;
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-left: 4px solid #e60000;
+            margin-bottom: 18px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .page .synopsis-block h3 {
+            font-style: normal;
+            color: #222;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .page .synopsis-block p {
+            margin-bottom: 8px;
+        }
+
+        .page .synopsis-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== СКРОЛЛБАР ===== */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c1c7cd;
+            border-radius: 4px;
+        }
+
+        /* ===== УВЕДОМЛЕНИЕ ===== */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: #2e7d32;
+        }
+
+        .notification.info {
+            background: #1a237e;
+        }
+
+        .notification.warning {
+            background: #e65100;
+        }
+
+        .notification.error {
+            background: #c62828;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== УВЕДОМЛЕНИЕ ===== -->
+<div class="notification" id="notification"></div>
+
+<!-- ===== ШАПКА ===== -->
+<div class="header">
+    <div class="logo-area" id="logoArea">
+        <span style="font-size:24px;">🏁</span>
+        <h1><span>Гоночная</span> АУ · Вики</h1>
+        <span class="click-counter" id="clickCounter"></span>
+    </div>
+    <div class="header-controls">
+        <span class="edit-badge" id="editBadge">✎ Режим редактирования</span>
+        <button class="export-btn" id="exportBtn" onclick="exportData()">📤 Экспорт JSON</button>
+        <button class="exit-btn" id="exitBtn" onclick="exitEditMode()">🔒 Выйти</button>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Найти персонажа..." onkeyup="if(event.key==='Enter') searchCharacter()">
+            <button onclick="searchCharacter()">Найти</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ОСНОВНОЙ КОНТЕЙНЕР ===== -->
+<div class="wiki-container">
+
+    <!-- Боковая панель -->
+    <nav class="sidebar" id="sidebar">
+        <a class="synopsis-link" data-target="synopsis" onclick="navigateTo('synopsis')">📖 Сюжет</a>
+        <h3>🏎️ Персонажи</h3>
+        <ul id="navList"></ul>
+    </nav>
+
+    <!-- Контент -->
+    <div class="content" id="contentArea"></div>
+
+</div>
+
+<script>
+    // ============================================================
+    // 1. ДАННЫЕ — ВСЕ ПЕРСОНАЖИ
+    // ============================================================
+
+    const charactersData = [
+        {
+            id: "adin",
+            title: "Адин",
+            category: "Персонажи",
+            infobox: {
+                "Команда": "Red Bull",
+                "Стиль": "агрессивный"
+            },
+            text: `<p><strong>Адин</strong> — действующий пилот команды Red Bull Racing в Формуле-1.</p>
+
+                <p><strong>История конфликта с Альбером Кроссманом:</strong> в острой борьбе за чемпионство три года назад
+                Адин систематически применял против Альбера жёсткие тактики. Он дважды в ходе гонок вытеснял Кроссмана за
+                пределы трассы; при попытке обгона намеренно столкнулся с ним, что привело к аварии обоих пилотов; в другой
+                гонке, игнорируя потенциальные штрафы, намеренно протаранил машину Альбера, чтобы лишить его победы и
+                первого места.</p>
+
+                <p><strong>Профессиональная деятельность:</strong> известен чрезвычайно жёстким и агрессивным стилем
+                пилотирования. В сторону Кейла Хенитьюза экспрессивно произносил <em>«das Arschloch»</em> (нем. "мудак").</p>
+
+                <p><strong>Ключевые отношения:</strong> основной соперник Альбера Кроссмана. Был напарником Кейла Хенитьюза
+                в Формуле-2.</p>`
+        },
+        {
+            id: "albert",
+            title: "Альбер Кроссман",
+            category: "Персонажи",
+            infobox: {
+                "Команда": "Ferrari",
+                "Титулы": "4× чемпион мира",
+                "Стиль": "плавный, стабильный"
+            },
+            text: `<p><strong>Альбер Кроссман</strong> — действующий пилот команды Ferrari, четырёхкратный чемпион мира.</p>
+
+                <p><strong>Психологический портрет:</strong> испытывает значительное давление со стороны отца и менеджера
+                Розалин. После жёсткого противостояния с Адином проявляет нервозность по отношению к агрессивным пилотам.
+                В публичном поле поддерживает образ доброжелательного и корректного спортсмена, который частью окружения
+                воспринимается как фальшивый. Однако в моменты крайнего напряжения способен на эмоциональные, а иногда и
+                агрессивные выпады.</p>
+
+                <p><strong>Внешность:</strong> обладает поразительным внешним сходством с Ан Ро Маном, что стало предметом
+                обсуждения среди фанатов и породило теории о возможном родстве. Сами Альбер и Ро Ман отрицают какую-либо
+                семейную связь.</p>
+
+                <p><strong>Профессиональная деятельность:</strong> будучи действующим пилотом команды Ferrari, чувствует
+                себя с болидом одним целым, много лет является ценной ячейкой команды. На первом году появления в команде
+                Кейла Хенитьюза приносит команде победу, несмотря на предрассудки. Известен своим плавным стилем
+                пилотирования, ориентированным на стабильную и долгосрочную стратегию гонки. Дополнительно увлекается
+                проведением стримов и диджеингом.</p>
+
+                <p><strong>Дополнительные факты:</strong> владеет большим количеством машин — от популярных
+                (Porsche 911, Lamborghini Urus, McLaren 570S) до раритетных (Shelby Cobra 427, Ford GT40,
+                Bugatti Type 57SC Atlantic). Находится в лёгком смятении из-за существования зинов и фотоальбомов,
+                посвящённых ему и Ро Ману.</p>`
+        },
+        {
+            id: "roman",
+            title: "Ан Ро Ман",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "комментатор",
+                "Особенность": "двойник Альбера"
+            },
+            text: `<p><strong>Ан Ро Ман</strong> — спортивный комментатор.</p>
+
+                <p><strong>Внешность:</strong> обладает поразительным внешним сходством с Альбером Кроссманом, что
+                породило многочисленные шутки и теории среди фанатов о возможном дальнем родстве (вплоть до ироничных
+                предположений о «разлучённых в десятом колене братьях»). Сами Ро Ман и Альбер родство отрицают.</p>
+
+                <p><strong>Личные качества:</strong> спокойный, несколько рассеянный человек, который регулярно
+                перебивается доставками вместо полноценного питания. Имеет пирсинг в губе, с которым часто играет
+                по привычке, что периодически приводит к комичным инцидентам (например, случайное проглатывание
+                шарика от серьги).</p>
+
+                <p><strong>Отношения с Джопис:</strong> состоит в дружеских отношениях с коллегой Джопис, которая
+                проявляет к нему ярко выраженную заботу. Джопис регулярно приносит ему домашнюю еду и выпечку,
+                критикуя его привычку питаться доставками, и активно участвует в его жизни, в том числе через
+                фанатский мерч.</p>
+
+                <p><strong>Отношения с семьёй Виолан:</strong> испытывает страх перед семейными встречами с Виолан,
+                поскольку её дочь Лили регулярно использует его для демонстрации новых приёмов боевых искусств
+                (вплоть до бросков на прогиб).</p>`
+        },
+        {
+            id: "bad",
+            title: "Бад",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "комментатор",
+                "Стиль": "провокационный"
+            },
+            text: `<p><strong>Бад</strong> — спортивный комментатор, ведущий прямых трансляций гонок Формулы-1.</p>
+
+                <p><strong>Профессиональная деятельность:</strong> известен своим экспрессивным и провокационным стилем
+                комментария. Его высказывания в эфире, которые часто носят характер неуместных или резких шуток,
+                регулярно становятся поводом для публичного осуждения и критики в социальных сетях, что неоднократно
+                приводило к кампаниям по его «отмене».</p>
+
+                <p><strong>Личные связи:</strong> находится в неформальных, дружеских отношениях с Кейлом Хенитьюзом.
+                После гонок они регулярно проводят время вместе, употребляя алкогольные напитки, в связи с чем Бад
+                характеризуется как «собутыльник» Кейла.</p>`
+        },
+        {
+            id: "basen",
+            title: "Басен",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "сын Виолан"
+            },
+            text: `<p><strong>Басен</strong> — сын Виолан.</p>
+
+                <p>Более спокойный и рассудительный, чем его сестра Лили. Во время её «тренировок» на Ро Мане
+                благоразумно отходит в сторону и приносит лёд для ушибов.</p>`
+        },
+        {
+            id: "bikros",
+            title: "Бикрос",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "повар Кейла"
+            },
+            text: `<p><strong>Бикрос</strong> — личный повар Кейла Хенитьюза.</p>
+
+                <p>Обеспечивает питание Кейла в соответствии с гоночными требованиями. Также готовит для семьи
+                Ким Рок Су, которые часто пользуются его услугами.</p>`
+        },
+        {
+            id: "valentino",
+            title: "Валентино",
+            category: "Персонажи",
+            infobox: {
+                "Команда": "Red Bull",
+                "Роль": "второй пилот"
+            },
+            text: `<p><strong>Валентино</strong> — действующий пилот команды Red Bull.</p>
+
+                <p>В текущем сезоне демонстрирует самые низкие результаты за всю свою карьеру в Формуле-1,
+                что связано со сложной внутрикомандной ситуацией. На фоне слабых показателей руководство команды
+                рассматривает вопрос о непродлении с ним контракта.</p>`
+        },
+        {
+            id: "violan",
+            title: "Виолан",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "преподаватель фехтования",
+                "Дети": "Лили и Басен"
+            },
+            text: `<p><strong>Виолан</strong> — преподаватель фехтования и боевых искусств, подруга Джопис.</p>
+
+                <p>Мастер своего дела, обучает детей и взрослых. Внешне, по мнению Ан Ро Мана, отдалённо напоминает
+                Джопис, что вызывает у него тревогу при мысли о встрече с ними обеими одновременно.</p>
+
+                <p>Приглашает Ро Мана на семейные посиделки, которые он избегает из-за регулярных «атак» со стороны Лили.</p>`
+        },
+        {
+            id: "vitira",
+            title: "Витира",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "менеджер Williams"
+            },
+            text: `<p><strong>Витира</strong> — личный менеджер Пасетона из Williams.</p>
+
+                <p>На протяжении двух лет безуспешно пытается донести до Розалин информацию о своих романтических
+                чувствах к ней.</p>
+
+                <p>Курирует карьеру Пасетона и ведёт TikTok-аккаунт о гонках 80-90-х годов.</p>`
+        },
+        {
+            id: "derut",
+            title: "Дерут Хенитьюз",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "отец Кейла"
+            },
+            text: `<p><strong>Дерут Хенитьюз</strong> — отец Кейла Хенитьюза.</p>
+
+                <p>После смерти жены отошёл от воспитания сына, не проявляя интереса к его увлечению гонками.</p>`
+        },
+        {
+            id: "jopis",
+            title: "Джопис",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "коллега Ро Мана",
+                "Особенность": "носит кастет"
+            },
+            text: `<p><strong>Джопис</strong> — коллега Ан Ро Мана.</p>
+
+                <p>За строгой внешностью скрывается эксцентричная и заботливая личность. Обладает навыками самообороны —
+                «тётя Джопис всё порешает» с помощью кастета из сумочки.</p>
+
+                <p>Страстная любительница собак, особенно пса Пушка. Активно скупает фанатский мерч с Ро Маном и Альбером.</p>
+
+                <p>После гонок клеит на Ро Мана стикеры «Отличная работа» и «Ты молодец» в виде щенков.</p>`
+        },
+        {
+            id: "jurtemz",
+            title: "Джур Хенитьюз (Темз)",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "мать Кейла (покойная)"
+            },
+            text: `<p><strong>Джур Хенитьюз (Темз)</strong> — покойная мать Кейла Хенитьюза.</p>
+
+                <p>Происходила из семьи Темз, связанной с автоспортом. Именно она привила сыну любовь к гонкам и
+                отдала его в секцию картинга. Её смерть стала ключевым моментом в жизни Кейла, ознаменовавшим его
+                окончательный уход в гонки.</p>`
+        },
+        {
+            id: "kayle",
+            title: "Кейл Хенитьюз",
+            category: "Персонажи",
+            infobox: {
+                "Команда": "Ferrari",
+                "Возраст": "18 лет",
+                "Стиль": "агрессивный, рискованный"
+            },
+            text: `<p><strong>Кейл Хенитьюз</strong> — действующий пилот команды Ferrari, напарник Альбера Кроссмана.
+                В возрасте 18 лет он уже является одним из самых ярких талантов в Формуле-1.</p>
+
+                <p><strong>Биографическая справка:</strong> начал карьеру в картинге. Прошёл через младшие формулы
+                (Ф4, Ф3, Ф2) под руководством тренера и бывшего гонщика Рок Су. В Формуле-2 был напарником Адина.
+                В Ф1 привёл своего инженера, Чхве Хана.</p>
+
+                <p><strong>Психологический портрет:</strong> мечтает о спокойной жизни в достатке, но в условиях
+                давления на трассе склонен к прямолинейным и эмоциональным реакциям. Ярким примером является гонка,
+                в которой Адин на протяжении многих кругов преследовал его, двигаясь прямо за его болидом. Не выдержав
+                психологического давления, Хенитьюз открытым радиоканалом передал сообщение, адресованное команде
+                соперника: «Оставьте меня одного, пожалуйста».</p>
+
+                <p><strong>Профессиональная деятельность:</strong> отличается агрессивной и рискованной манерой
+                пилотирования. Несмотря на многочисленные инциденты на трассе и регулярные штрафы, демонстрирует
+                высокую скорость и стабильно финиширует в топ-3.</p>
+
+                <p>Начинает полноценную борьбу за первенство с Альбером Кроссманом только на третий год пребывания
+                в команде Ferrari. После победы Альбера на первом году Кейл предложил устроить пиротехническое шоу,
+                чтобы заставить замолчать завистников и недоброжелателей.</p>
+
+                <p><em>— …у нас нет столько средств<br>
+                — Ты стал чемпионом, они у нас есть.<br>
+                — …как мы сделаем всё это законно и легализовано?<br>
+                — Нам поможет Тейлор.<br>
+                — …кто организует такие огромные масштабы?<br>
+                — У нас есть прекрасная Розалин с её коммуникативными способностями?<br>
+                — …гребаный ублюдок<br>
+                — спасибо :3</em></p>`
+        },
+        {
+            id: "roksu",
+            title: "Ким Рок Су",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "тренер Кейла",
+                "Бывшая команда": "Ferrari"
+            },
+            text: `<p><strong>Ким Рок Су</strong> — бывший пилот команды Ferrari, тренер и наставник Кейла Хенитьюза.</p>
+
+                <p><strong>Биографическая справка:</strong> карьера Рок Су как действующего гонщика трагически оборвалась
+                из-за серьёзной аварии во время гонки. В результате инцидента он на несколько недель впал в кому,
+                а по всему телу остались многочисленные шрамы. Далее помогал Кейлу в карьерном росте, проводя для него
+                тренировки и руководя его выступлениями в младших формулах (Ф4, Ф3, Ф2). Именно он привёл Хенитьюза
+                на вершину автоспорта.</p>
+
+                <p><strong>Психологический портрет:</strong> будучи гонщиком, демонстрировал независимую позицию,
+                вступая в противоречия с руководством FIA, пренебрежительно относясь к взаимодействию с прессой.
+                Автоспорт воспринимал исключительно как гоночную среду, не проявляя интереса к медиа и популярности.</p>
+
+                <p><strong>Личные связи:</strong> проживает и состоит в романтических отношениях с Ли Су Хеком и Чхве Чон Су.</p>`
+        },
+        {
+            id: "klope",
+            title: "Клопе Секка",
+            category: "Персонажи",
+            infobox: {
+                "Команда": "Mercedes"
+            },
+            text: `<p><strong>Клопе Секка</strong> — действующий пилот команды Mercedes Формулы-1.</p>`
+        },
+        {
+            id: "lili",
+            title: "Лили",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "дочь Виолан"
+            },
+            text: `<p><strong>Лили</strong> — дочь Виолан.</p>
+
+                <p>Активно занимается боевыми искусствами. Регулярно использует Ан Ро Мана для демонстрации
+                изученных приёмов (включая броски на прогиб). Называет его «смешным аджосси».</p>`
+        },
+        {
+            id: "suheq",
+            title: "Ли Су Хек",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "партнёр Рок Су"
+            },
+            text: `<p><strong>Ли Су Хек</strong> — член семьи Рок Су.</p>
+
+                <p>Проживает и состоит в романтических отношениях с Ким Рок Су и Чхве Чон Су. Кейл Хенитьюз в период
+                своего становления регулярно проводил время в их доме.</p>`
+        },
+        {
+            id: "loc",
+            title: "Лок",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "друг Кейла"
+            },
+            text: `<p><strong>Лок</strong> — друг Кейла Хенитьюза.</p>
+
+                <p>Изначально не был связан с автоспортом. Под влиянием Кейла и его окружения начал интересоваться
+                индустрией и рассматривает возможность построения карьеры в этой сфере в будущем. Его интересы лежат
+                не в области пилотирования, а в работе в команде за кулисами гоночных мероприятий.</p>`
+        },
+        {
+            id: "ollien",
+            title: "Оллиен",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "опекун Раона"
+            },
+            text: `<p><strong>Оллиен</strong> — опекун Раона.</p>
+
+                <p>Состоит в романтических отношениях с Эрухабеном и совместно с ним является опекуном Раона
+                после смерти Шеритт.</p>`
+        },
+        {
+            id: "on",
+            title: "Он",
+            category: "Персонажи",
+            infobox: {
+                "Возраст": "10 лет",
+                "Роль": "подопечная Рок Су"
+            },
+            text: `<p><strong>Он</strong> — подопечная Ким Рок Су, 10 лет.</p>
+
+                <p>Является сиротой. Вместе с Хоном была спасена Кейлом Хенитьюзом в прошлом. Официальное опекунство
+                над ними взял Рок Су, обеспечив им воспитание и семейную поддержку. Из-за многонациональной обстановки
+                дома понемногу изучает различные языки.</p>`
+        },
+        {
+            id: "paseton",
+            title: "Пасетон",
+            category: "Персонажи",
+            infobox: {
+                "Команда": "Williams"
+            },
+            text: `<p><strong>Пасетон</strong> — пилот команды Williams Формулы-1.</p>
+
+                <p>Его карьеру курирует менеджер Витира.</p>`
+        },
+        {
+            id: "raon",
+            title: "Раон",
+            category: "Персонажи",
+            infobox: {
+                "Категория": "Формула-2",
+                "Возраст": "15 лет"
+            },
+            text: `<p><strong>Раон</strong> — пилот Формулы-2.</p>
+
+                <p>Несмотря на юный возраст (15 лет), выступает в Формуле-2, перейдя в неё сразу из Формулы-4
+                благодаря протекции Эрухабена и Рок Су. После смерти матери, Шеритт, в автокатастрофе взят под
+                опеку Эрухабеном и Оллиеном.</p>
+
+                <p>Кейл Хенитьюз является для него старшим братом и наставником; поэтому Раон не стесняется
+                повреждать и разбивать гоночную технику как Кейла, так и Рок Су. Из-за многонациональной обстановки
+                дома понемногу изучает различные языки, а после очередного нецензурного высказывания Адина на немецком
+                втайне учит и этот язык из-за желания узнать запрещенную опекунами нецензурную лексику.</p>`
+        },
+        {
+            id: "ron",
+            title: "Рон",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "попечитель Кейла"
+            },
+            text: `<p><strong>Рон</strong> — попечитель Кейла Хенитьюза после смерти его матери.</p>
+
+                <p>В отличие от родного отца, принимал активное участие в жизни Кейла, возил его на гонки и
+                поддерживал его стремление стать пилотом.</p>`
+        },
+        {
+            id: "rosalin",
+            title: "Розалин",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "менеджер Ferrari"
+            },
+            text: `<p><strong>Розалин</strong> — менеджер команды Ferrari.</p>
+
+                <p>Осуществляет полное управление карьерой Кроссмана, включая контрактные и медийные вопросы.
+                Наблюдает и анализирует внутренние конфликты в команде, в которые вовлечён её подопечный.</p>
+
+                <p>Не видит романтических чувств Витиры, менеджера Пасетона.</p>`
+        },
+        {
+            id: "chonsu",
+            title: "Чхве Чон Су",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "партнёр Рок Су"
+            },
+            text: `<p><strong>Чхве Чон Су</strong> — член семьи Рок Су.</p>
+
+                <p>Проживает и состоит в романтических отношениях с Ким Рок Су и Ли Су Хеком. Кейл Хенитьюз в период
+                своего становления регулярно проводил время в их доме.</p>`
+        },
+        {
+            id: "chwehan",
+            title: "Чхве Хан",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "инженер Ferrari"
+            },
+            text: `<p><strong>Чхве Хан</strong> — инженер в команде Ferrari.</p>
+
+                <p>Предпочитает сосредотачиваться на технической работе и избегать межличностных конфликтов.
+                Открыто выражает неприязнь к Альберу Кроссману, которого обвиняет в фальшивости, что приводит к
+                регулярным словесным перепалкам. В профессиональном общении с Кроссманом часто демонстрирует
+                сарказм, маскируя его под техническую беседу.</p>
+
+                <p>Был приглашён в команду Кейлом Хенитьюзом.</p>`
+        },
+        {
+            id: "sheritt",
+            title: "Шеритт",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "мать Раона (покойная)"
+            },
+            text: `<p><strong>Шеритт</strong> — покойная мать Раона.</p>
+
+                <p>Погибла в автокатастрофе.</p>`
+        },
+        {
+            id: "eruhaben",
+            title: "Эрухабен",
+            category: "Персонажи",
+            infobox: {
+                "Роль": "директор FIA"
+            },
+            text: `<p><strong>Эрухабен</strong> — один из директоров FIA — организации, курирующей проведение
+                гонок Формулы-1.</p>
+
+                <p>Занимает влиятельную позицию в руководстве автоспортом. Начинал карьеру с работы инженером.</p>
+
+                <p>Состоит в романтических отношениях с Оллиеном и совместно с ним является опекуном Раона
+                после смерти Шеритт.</p>`
+        },
+        {
+            id: "hon",
+            title: "Хон",
+            category: "Персонажи",
+            infobox: {
+                "Возраст": "10 лет",
+                "Роль": "подопечный Рок Су"
+            },
+            text: `<p><strong>Хон</strong> — подопечный Ким Рок Су, 10 лет.</p>
+
+                <p>Является сиротой. Вместе с Он был спасён Кейлом Хенитьюзом в прошлом. Официальное опекунство
+                над ними взял Рок Су, обеспечив им воспитание и семейную поддержку. Из-за многонациональной обстановки
+                дома понемногу изучает различные языки.</p>`
+        }
+    ];
+
+    // ============================================================
+    // 2. СЮЖЕТ (отдельно)
+    // ============================================================
+
+    const synopsisData = {
+        id: "synopsis",
+        title: "Сюжет",
+        text: `
+            <div class="synopsis-block">
+                <h3>🏁 Истоки страсти</h3>
+                <p>С самого детства гонки были неотъемлемой частью жизни Кейла Хенитьюза. Его мать, Джур Темз,
+                происходила из именитой семьи гонщиков, и именно она привила сыну любовь к скорости и адреналину,
+                отдав его в секцию картинга. После её безвременной кончины Кейл посвятил себя исключительно гонкам,
+                на которые его водил Рон. Дерут же, родной отец, махнул на воспитание сына рукой.</p>
+            </div>
+
+            <div class="synopsis-block">
+                <h3>🏁 Становление чемпиона</h3>
+                <p>В десятилетнем возрасте Кейл познакомился с Рок Су, бывшим гонщиком. Между ними завязалось общение,
+                которое переросло в дружеско-семейные отношения. Кейл стал проводить выходные в доме Рок Су, помогая
+                ему и его семье (Су Хеку и Чон Су) на ферме. Заметив талант, Рок Су взял на себя роль тренера и наставника.</p>
+            </div>
+
+            <div class="synopsis-block">
+                <h3>🏁 Формула-2 и первый соперник</h3>
+                <p>Пройдя Ф4 и Ф3, в Формуле-2 Кейл стал напарником Адина — пилота с агрессивным стилем. Адин за сезон
+                проложил себе путь в Формулу-1, став главным кошмаром для Альбера Кроссмана.</p>
+                <p>Блистательные результаты Кейла не остались незамеченными — спустя год он попал в Формулу-1, где
+                по иронии судьбы стал напарником того самого Альбера.</p>
+            </div>
+
+            <div class="synopsis-block">
+                <h3>🏁 Хаос в Формуле-1</h3>
+                <p>Для Кроссмана, уже измученного противостоянием с Адином, появление «младшей версии» — как окрестили
+                Кейла в СМИ — стало последней каплей. Их отношения не заладились с первой встречи, когда Кейл по
+                неосторожности пролил на Альбера горячий американо.</p>
+                <p>Так началась круговерть, в которой все преследуют и пытают Альбера. Его кошмарят все — от менеджера
+                Розалин и собственного отца до Адина и инженера Чхве Хана.</p>
+                <p>Кейл же просто живёт своей жизнью, дышит полной грудью, а вокруг него по воле этого дыхания
+                разворачивается полная и абсолютная жесть.</p>
+            </div>
+        `
+    };
+
+    // ============================================================
+    // 3. ОСНОВНАЯ ЛОГИКА
+    // ============================================================
+
+    // Состояние
+    let isEditMode = false;
+    let isEditingPage = null;
+    let clickCount = 0;
+    let clickTimer = null;
+
+    // Сортируем персонажей по алфавиту
+    const sortedCharacters = [...charactersData].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+
+    // Сопоставление id и заголовков для ссылок
+    const titleMap = {};
+    sortedCharacters.forEach(c => titleMap[c.id] = c.title);
+
+    // ============================================================
+    // 4. РЕНДЕР
+    // ============================================================
+
+    function autoLink(text, currentId) {
+        let result = text;
+        const sorted = [...sortedCharacters].sort((a, b) => b.title.length - a.title.length);
+        sorted.forEach(char => {
+            if (char.id === currentId) return;
+            const name = char.title;
+            const regex = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+            result = result.replace(regex, `<a class="wiki-link" data-target="${char.id}" onclick="navigateTo('${char.id}')">${name}</a>`);
+        });
+        return result;
+    }
+
+    function renderSynopsis() {
+        const textHTML = autoLink(synopsisData.text, 'synopsis');
+        return `
+            <div class="page active" data-id="synopsis">
+                <h2>
+                    ${synopsisData.title}
+                    <button class="edit-toggle-btn" onclick="toggleEdit('synopsis')">✎ Редактировать</button>
+                </h2>
+                <div class="text-content">${textHTML}</div>
+                <div class="categories">📖 Основной сюжет вселенной</div>
+                <div class="edit-actions">
+                    <button class="save-btn" onclick="savePage('synopsis')">💾 Сохранить</button>
+                    <button class="cancel-btn" onclick="cancelEdit('synopsis')">Отмена</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderPage(char) {
+        let infoboxHTML = '';
+        if (char.infobox) {
+            infoboxHTML = `<div class="infobox"><h4>${char.title}</h4>`;
+            for (const [label, value] of Object.entries(char.infobox)) {
+                infoboxHTML += `<div class="row"><span class="label">${label}</span><span class="value" data-field="${label}">${value}</span></div>`;
+            }
+            infoboxHTML += `</div>`;
+        }
+
+        const textHTML = autoLink(char.text, char.id);
+
+        return `
+            <div class="page" data-id="${char.id}">
+                <h2>
+                    ${char.title}
+                    <button class="edit-toggle-btn" onclick="toggleEdit('${char.id}')">✎ Редактировать</button>
+                </h2>
+                ${infoboxHTML}
+                <div class="text-content">${textHTML}</div>
+                <div class="categories">🏷️ ${char.category}</div>
+                <div class="edit-actions">
+                    <button class="save-btn" onclick="savePage('${char.id}')">💾 Сохранить</button>
+                    <button class="cancel-btn" onclick="cancelEdit('${char.id}')">Отмена</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function buildNav() {
+        const list = document.getElementById('navList');
+        list.innerHTML = '';
+        sortedCharacters.forEach(char => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.textContent = char.title;
+            a.dataset.target = char.id;
+            a.onclick = (e) => {
+                e.preventDefault();
+                navigateTo(char.id);
+            };
+            li.appendChild(a);
+            list.appendChild(li);
+        });
+    }
+
+    function navigateTo(id) {
+        if (isEditingPage) {
+            cancelEdit(isEditingPage);
+        }
+
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+        const target = document.querySelector(`.page[data-id="${id}"]`);
+        if (target) target.classList.add('active');
+
+        document.querySelectorAll('#navList a, .synopsis-link').forEach(a => {
+            a.classList.toggle('active', a.dataset.target === id);
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================================
+    // 5. 7 КЛИКОВ ПО ЛОГОТИПУ
+    // ============================================================
+
+    document.getElementById('logoArea').addEventListener('click', function() {
+        clickCount++;
+        const counter = document.getElementById('clickCounter');
+        counter.textContent = clickCount < 7 ? `${clickCount}/7` : '✨';
+
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => {
+            clickCount = 0;
+            counter.textContent = '';
+        }, 2000);
+
+        if (clickCount >= 7) {
+            clickCount = 0;
+            counter.textContent = '✅';
+            activateEditMode();
+        }
+    });
+
+    function activateEditMode() {
+        if (isEditMode) return;
+        isEditMode = true;
+
+        document.getElementById('editBadge').classList.add('active');
+        document.getElementById('exportBtn').classList.add('active');
+        document.getElementById('exitBtn').classList.add('active');
+
+        document.querySelectorAll('.page .edit-toggle-btn').forEach(btn => {
+            btn.classList.add('active');
+        });
+
+        showNotification('🔓 Режим редактирования активирован!', 'success');
+    }
+
+    function exitEditMode() {
+        if (!isEditMode) return;
+
+        if (isEditingPage) {
+            cancelEdit(isEditingPage);
+        }
+
+        isEditMode = false;
+
+        document.getElementById('editBadge').classList.remove('active');
+        document.getElementById('exportBtn').classList.remove('active');
+        document.getElementById('exitBtn').classList.remove('active');
+
+        document.querySelectorAll('.page .edit-toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        showNotification('🔒 Режим редактирования выключен', 'info');
+    }
+
+    // ============================================================
+    // 6. РЕДАКТИРОВАНИЕ
+    // ============================================================
+
+    function toggleEdit(pageId) {
+        if (!isEditMode) {
+            showNotification('⚠️ Сначала активируйте режим редактирования (7 кликов по логотипу)', 'warning');
+            return;
+        }
+
+        if (isEditingPage === pageId) {
+            cancelEdit(pageId);
+            return;
+        }
+
+        if (isEditingPage) {
+            cancelEdit(isEditingPage);
+        }
+
+        const page = document.querySelector(`.page[data-id="${pageId}"]`);
+        if (!page) return;
+
+        const content = page.querySelector('.text-content');
+        const actions = page.querySelector('.edit-actions');
+
+        // Сохраняем оригинал
+        content.dataset.original = content.innerHTML;
+
+        // Инфобокс — делаем редактируемыми значения
+        page.querySelectorAll('.infobox .row .value').forEach(el => {
+            el.dataset.original = el.textContent;
+            el.contentEditable = true;
+        });
+
+        content.contentEditable = true;
+        content.focus();
+
+        if (actions) actions.classList.add('active');
+
+        // Меняем кнопку
+        const btn = page.querySelector('.edit-toggle-btn');
+        if (btn) btn.textContent = '❌ Отменить';
+
+        isEditingPage = pageId;
+    }
+
+    function savePage(pageId) {
+        const page = document.querySelector(`.page[data-id="${pageId}"]`);
+        if (!page) return;
+
+        const content = page.querySelector('.text-content');
+        const actions = page.querySelector('.edit-actions');
+
+        // Сохраняем текст
+        const char = sortedCharacters.find(c => c.id === pageId);
+        if (char) {
+            char.text = content.innerHTML;
+        } else if (pageId === 'synopsis') {
+            synopsisData.text = content.innerHTML;
+        }
+
+        // Сохраняем инфобокс
+        page.querySelectorAll('.infobox .row .value').forEach(el => {
+            const label = el.dataset.field;
+            if (char && char.infobox && label) {
+                char.infobox[label] = el.textContent.trim();
+            }
+        });
+
+        // Выходим из режима редактирования
+        content.contentEditable = false;
+        content.dataset.original = '';
+        if (actions) actions.classList.remove('active');
+
+        page.querySelectorAll('.infobox .row .value').forEach(el => {
+            el.contentEditable = false;
+            el.dataset.original = '';
+        });
+
+        const btn = page.querySelector('.edit-toggle-btn');
+        if (btn) btn.textContent = '✎ Редактировать';
+
+        isEditingPage = null;
+
+        // Обновляем ссылки
+        const newContent = autoLink(content.innerHTML, pageId);
+        content.innerHTML = newContent;
+
+        showNotification('💾 Страница сохранена! Не забудьте экспортировать JSON.', 'success');
+    }
+
+    function cancelEdit(pageId) {
+        const page = document.querySelector(`.page[data-id="${pageId}"]`);
+        if (!page) return;
+
+        const content = page.querySelector('.text-content');
+        const actions = page.querySelector('.edit-actions');
+
+        // Восстанавливаем оригинал
+        if (content.dataset.original) {
+            content.innerHTML = content.dataset.original;
+            content.dataset.original = '';
+        }
+
+        content.contentEditable = false;
+        if (actions) actions.classList.remove('active');
+
+        page.querySelectorAll('.infobox .row .value').forEach(el => {
+            if (el.dataset.original) {
+                el.textContent = el.dataset.original;
+                el.dataset.original = '';
+            }
+            el.contentEditable = false;
+        });
+
+        const btn = page.querySelector('.edit-toggle-btn');
+        if (btn) btn.textContent = '✎ Редактировать';
+
+        if (isEditingPage === pageId) {
+            isEditingPage = null;
+        }
+
+        showNotification('❌ Редактирование отменено', 'info');
+    }
+
+    // ============================================================
+    // 7. ЭКСПОРТ JSON
+    // ============================================================
+
+    function exportData() {
+        // Собираем данные
+        const data = {
+            characters: sortedCharacters,
+            synopsis: synopsisData
+        };
+
+        // Создаём JSON
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        // Скачиваем
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showNotification('📥 data.json скачан! Замените файл в репозитории.', 'success');
+    }
+
+    // ============================================================
+    // 8. ПОИСК
+    // ============================================================
+
+    function searchCharacter() {
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (!query) return;
+
+        const found = sortedCharacters.find(c => c.title.toLowerCase().includes(query));
+        if (found) {
+            navigateTo(found.id);
+            document.getElementById('searchInput').value = '';
+        } else {
+            showNotification(`❌ Персонаж "${query}" не найден`, 'error');
+        }
+    }
+
+    // ============================================================
+    // 9. УВЕДОМЛЕНИЯ
+    // ============================================================
+
+    function showNotification(message, type = 'info') {
+        const el = document.getElementById('notification');
+        el.textContent = message;
+        el.className = 'notification ' + type + ' show';
+        clearTimeout(el._timeout);
+        el._timeout = setTimeout(() => {
+            el.classList.remove('show');
+        }, 4000);
+    }
+
+    // ============================================================
+    // 10. ИНИЦИАЛИЗАЦИЯ
+    // ============================================================
+
+    function init() {
+        const container = document.getElementById('contentArea');
+
+        // Сюжет
+        container.innerHTML = renderSynopsis();
+
+        // Персонажи
+        sortedCharacters.forEach(char => {
+            container.innerHTML += renderPage(char);
+        });
+
+        buildNav();
+        navigateTo('synopsis');
+
+        // Обработка кликов по ссылкам внутри контента
+        container.addEventListener('click', (e) => {
+            const link = e.target.closest('.wiki-link');
+            if (link) {
+                e.preventDefault();
+                const targetId = link.dataset.target;
+                if (targetId) navigateTo(targetId);
+            }
+        });
+
+        // Проверяем, не сохранён ли режим редактирования в localStorage
+        // (опционально — можно сохранять состояние)
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    // ============================================================
+    // 11. ГЛОБАЛЬНЫЕ ФУНКЦИИ
+    // ============================================================
+
+    window.navigateTo = navigateTo;
+    window.searchCharacter = searchCharacter;
+    window.toggleEdit = toggleEdit;
+    window.savePage = savePage;
+    window.cancelEdit = cancelEdit;
+    window.exportData = exportData;
+    window.exitEditMode = exitEditMode;
+    window.showNotification = showNotification;
+</script>
+
+</body>
+</html>
