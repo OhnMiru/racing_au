@@ -38,6 +38,8 @@
             --notification-warning: #e65100;
             --notification-error: #c62828;
             --logo-hover: #ffebee;
+            --fanfic-border: #2e7d32;
+            --fanfic-bg: #f1f8e9;
         }
 
         /* ===== ТЁМНАЯ ТЕМА ===== */
@@ -73,6 +75,8 @@
             --notification-warning: #3a2a1a;
             --notification-error: #3a1a1a;
             --logo-hover: #3a1a1a;
+            --fanfic-border: #388e3c;
+            --fanfic-bg: #1a2a1a;
         }
 
         /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
@@ -286,7 +290,7 @@
         .sidebar .synopsis-link {
             display: block;
             padding: 8px 10px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             background: var(--text-link-hover);
             border-radius: 6px;
             color: var(--text-link);
@@ -311,7 +315,7 @@
         .sidebar .arts-link {
             display: block;
             padding: 8px 10px;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             background: var(--text-link-hover);
             border-radius: 6px;
             color: var(--text-link);
@@ -329,6 +333,31 @@
         }
 
         .sidebar .arts-link.active {
+            background: var(--text-link-hover);
+            opacity: 0.9;
+        }
+
+        .sidebar .fanfics-link {
+            display: block;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            background: var(--text-link-hover);
+            border-radius: 6px;
+            color: var(--text-link);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border-left: 3px solid var(--fanfic-border);
+            transition: 0.15s;
+            cursor: pointer;
+        }
+
+        .sidebar .fanfics-link:hover {
+            background: var(--text-link-hover);
+            opacity: 0.8;
+        }
+
+        .sidebar .fanfics-link.active {
             background: var(--text-link-hover);
             opacity: 0.9;
         }
@@ -546,6 +575,54 @@
 
         .art-card .art-artist a:hover {
             border-bottom: 1px solid var(--text-link);
+        }
+
+        /* ===== СТРАНИЦА ФАНФИКОВ ===== */
+        .fanfics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .fanfic-card {
+            background: var(--bg-block);
+            border-radius: 8px;
+            padding: 18px 22px;
+            box-shadow: 0 1px 4px var(--shadow);
+            border-left: 4px solid var(--fanfic-border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .fanfic-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .fanfic-card .fanfic-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .fanfic-card .fanfic-title a {
+            color: var(--text-link);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--border-color);
+        }
+
+        .fanfic-card .fanfic-title a:hover {
+            border-bottom: 1px solid var(--text-link);
+        }
+
+        .fanfic-card .fanfic-author {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .fanfic-card .fanfic-author strong {
+            color: var(--text-primary);
         }
 
         /* ===== ЛАЙТБОКС ===== */
@@ -781,6 +858,7 @@
     <nav class="sidebar" id="sidebar">
         <a class="synopsis-link" data-target="synopsis" onclick="navigateTo('synopsis')">Сюжет</a>
         <a class="arts-link" data-target="arts" onclick="navigateTo('arts')">Арты</a>
+        <a class="fanfics-link" data-target="fanfics" onclick="navigateTo('fanfics')">Фанфики</a>
         <h3>Персонажи</h3>
         <ul id="navList"></ul>
     </nav>
@@ -1090,6 +1168,26 @@
         ]
     };
 
+    // ===== ФАНФИКИ =====
+    const fanficsData = {
+        id: "fanfics",
+        title: "Фанфики",
+        fanfics: [
+            {
+                id: "fanfic_tochka_sryva",
+                title: "Точка срыва",
+                url: "https://ficbook.net/readfic/019d0583-c218-787c-809b-e3c18f4d189b",
+                author: "Olezha_441"
+            },
+            {
+                id: "fanfic_adrenalin",
+                title: "Адреналин",
+                url: "https://ficbook.net/readfic/019c67e3-b963-741d-a2a3-92fa211b12f4",
+                author: "Gentlenesss"
+            }
+        ]
+    };
+
     // ===== ОСНОВНАЯ ЛОГИКА =====
     let isEditMode = false;
     let isEditingPage = null;
@@ -1208,6 +1306,39 @@
         `;
     }
 
+    function renderFanfics() {
+        let fanficsHTML = '<div class="fanfics-list">';
+        fanficsData.fanfics.forEach(fanfic => {
+            fanficsHTML += `
+                <div class="fanfic-card">
+                    <div class="fanfic-title">
+                        <a href="${fanfic.url}" target="_blank">${fanfic.title}</a>
+                    </div>
+                    <div class="fanfic-author">
+                        <strong>Автор:</strong> ${fanfic.author}
+                    </div>
+                </div>
+            `;
+        });
+        fanficsHTML += '</div>';
+
+        return `
+            <div class="page" data-id="fanfics">
+                <h2>
+                    ${fanficsData.title}
+                    <button class="edit-toggle-btn" onclick="toggleFanficsEdit()">Редактировать</button>
+                </h2>
+                <div id="fanficsContainer">
+                    ${fanficsHTML}
+                </div>
+                <div class="edit-actions" id="fanficsEditActions">
+                    <button class="save-btn" onclick="saveFanfics()">Сохранить</button>
+                    <button class="cancel-btn" onclick="cancelFanficsEdit()">Отмена</button>
+                </div>
+            </div>
+        `;
+    }
+
     function renderPage(char) {
         const blocksHTML = renderBlocks(char.blocks, char.id);
         return `
@@ -1246,13 +1377,14 @@
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
         if (isEditingArts) cancelArtsEdit();
+        if (isEditingFanfics) cancelFanficsEdit();
 
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
         const target = document.querySelector(`.page[data-id="${id}"]`);
         if (target) target.classList.add('active');
 
-        document.querySelectorAll('#navList a, .synopsis-link, .arts-link').forEach(a => {
+        document.querySelectorAll('#navList a, .synopsis-link, .arts-link, .fanfics-link').forEach(a => {
             a.classList.toggle('active', a.dataset.target === id);
         });
 
@@ -1291,6 +1423,7 @@
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
         if (isEditingArts) cancelArtsEdit();
+        if (isEditingFanfics) cancelFanficsEdit();
 
         isEditMode = false;
 
@@ -1319,6 +1452,7 @@
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
         if (isEditingArts) cancelArtsEdit();
+        if (isEditingFanfics) cancelFanficsEdit();
 
         const page = document.querySelector(`.page[data-id="${pageId}"]`);
         if (!page) return;
@@ -1401,6 +1535,7 @@
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
         if (isEditingArts) cancelArtsEdit();
+        if (isEditingFanfics) cancelFanficsEdit();
 
         const page = document.querySelector(`.page[data-id="${pageId}"]`);
         if (!page) return;
@@ -1499,31 +1634,25 @@
 
         if (isEditingPage) cancelPageEdit(isEditingPage);
         if (isEditingBlock) cancelBlockEdit();
+        if (isEditingFanfics) cancelFanficsEdit();
 
-        // Сохраняем оригинальные данные для отмены
         artsOriginalData = JSON.parse(JSON.stringify(artsData.arts));
 
-        // Делаем карточки редактируемыми
         const container = document.getElementById('artsContainer');
         const cards = container.querySelectorAll('.art-card');
         cards.forEach((card, index) => {
             const titleEl = card.querySelector('.art-title');
             const artistEl = card.querySelector('.art-artist a');
             
-            // Делаем title редактируемым
             titleEl.contentEditable = true;
             titleEl.dataset.original = titleEl.textContent;
             
-            // Делаем artist редактируемым
             const artistSpan = card.querySelector('.art-artist');
-            const artistText = artistSpan.textContent.replace('Художник: ', '').trim();
             
-            // Заменяем ссылку на редактируемый текст
             const artistLink = artistEl;
             const linkText = artistLink.textContent;
             const linkHref = artistLink.href;
             
-            // Создаём редактируемый span для имени художника
             const newArtistSpan = document.createElement('span');
             newArtistSpan.contentEditable = true;
             newArtistSpan.textContent = linkText;
@@ -1534,10 +1663,8 @@
             newArtistSpan.style.borderBottom = '1px dotted var(--border-color)';
             newArtistSpan.style.cursor = 'text';
             
-            // Заменяем ссылку
             artistSpan.replaceChild(newArtistSpan, artistLink);
             
-            // Добавляем поле для ссылки (скрытое)
             const linkInput = document.createElement('input');
             linkInput.type = 'text';
             linkInput.className = 'artist-link-input';
@@ -1552,16 +1679,13 @@
         if (btn) btn.textContent = 'Отменить';
 
         isEditingArts = true;
-        showNotification('Режим редактирования артов активирован. Нажмите на название или имя художника для изменения.', 'info');
+        showNotification('Режим редактирования артов активирован.', 'info');
     }
 
     function cancelArtsEdit() {
         if (!isEditingArts) return;
 
-        // Восстанавливаем данные
         artsData.arts = JSON.parse(JSON.stringify(artsOriginalData));
-
-        // Перерендериваем арты
         renderArtsGrid();
 
         document.getElementById('artsEditActions').classList.remove('active');
@@ -1593,7 +1717,6 @@
     }
 
     function saveArts() {
-        // Собираем данные из редактируемых полей
         const container = document.getElementById('artsContainer');
         const cards = container.querySelectorAll('.art-card');
         
@@ -1615,16 +1738,154 @@
             }
         });
 
-        // Выходим из режима редактирования
         document.getElementById('artsEditActions').classList.remove('active');
         const btn = document.querySelector('.page[data-id="arts"] .edit-toggle-btn');
         if (btn) btn.textContent = 'Редактировать';
 
-        // Перерендериваем
         renderArtsGrid();
 
         isEditingArts = false;
-        showNotification('Арты сохранены! Не забудьте экспортировать JSON.', 'success');
+        showNotification('Арты сохранены!', 'success');
+    }
+
+    // ===== РЕДАКТИРОВАНИЕ ФАНФИКОВ =====
+    let isEditingFanfics = false;
+    let fanficsOriginalData = [];
+
+    function toggleFanficsEdit() {
+        if (!isEditMode) {
+            showNotification('Сначала активируйте режим редактирования (7 кликов по логотипу)', 'warning');
+            return;
+        }
+
+        if (isEditingFanfics) {
+            cancelFanficsEdit();
+            return;
+        }
+
+        if (isEditingPage) cancelPageEdit(isEditingPage);
+        if (isEditingBlock) cancelBlockEdit();
+        if (isEditingArts) cancelArtsEdit();
+
+        fanficsOriginalData = JSON.parse(JSON.stringify(fanficsData.fanfics));
+
+        const container = document.getElementById('fanficsContainer');
+        const cards = container.querySelectorAll('.fanfic-card');
+        cards.forEach((card, index) => {
+            const titleEl = card.querySelector('.fanfic-title a');
+            const authorEl = card.querySelector('.fanfic-author');
+            
+            // Делаем заголовок редактируемым
+            const titleText = titleEl.textContent;
+            const titleHref = titleEl.href;
+            
+            const newTitleSpan = document.createElement('span');
+            newTitleSpan.contentEditable = true;
+            newTitleSpan.textContent = titleText;
+            newTitleSpan.dataset.original = titleText;
+            newTitleSpan.dataset.originalLink = titleHref;
+            newTitleSpan.className = 'editable-fanfic-title';
+            newTitleSpan.style.color = 'var(--text-link)';
+            newTitleSpan.style.borderBottom = '1px dotted var(--border-color)';
+            newTitleSpan.style.cursor = 'text';
+            
+            const titleContainer = card.querySelector('.fanfic-title');
+            titleContainer.replaceChild(newTitleSpan, titleEl);
+            
+            // Добавляем скрытое поле для ссылки
+            const linkInput = document.createElement('input');
+            linkInput.type = 'text';
+            linkInput.className = 'fanfic-link-input';
+            linkInput.value = titleHref;
+            linkInput.style.display = 'none';
+            linkInput.dataset.index = index;
+            card.appendChild(linkInput);
+            
+            // Делаем автора редактируемым
+            const authorText = authorEl.textContent.replace('Автор: ', '').trim();
+            const newAuthorSpan = document.createElement('span');
+            newAuthorSpan.contentEditable = true;
+            newAuthorSpan.textContent = authorText;
+            newAuthorSpan.dataset.original = authorText;
+            newAuthorSpan.className = 'editable-fanfic-author';
+            newAuthorSpan.style.color = 'var(--text-primary)';
+            newAuthorSpan.style.cursor = 'text';
+            
+            authorEl.innerHTML = '<strong>Автор:</strong> ';
+            authorEl.appendChild(newAuthorSpan);
+        });
+
+        document.getElementById('fanficsEditActions').classList.add('active');
+        const btn = document.querySelector('.page[data-id="fanfics"] .edit-toggle-btn');
+        if (btn) btn.textContent = 'Отменить';
+
+        isEditingFanfics = true;
+        showNotification('Режим редактирования фанфиков активирован.', 'info');
+    }
+
+    function cancelFanficsEdit() {
+        if (!isEditingFanfics) return;
+
+        fanficsData.fanfics = JSON.parse(JSON.stringify(fanficsOriginalData));
+        renderFanficsList();
+
+        document.getElementById('fanficsEditActions').classList.remove('active');
+        const btn = document.querySelector('.page[data-id="fanfics"] .edit-toggle-btn');
+        if (btn) btn.textContent = 'Редактировать';
+
+        isEditingFanfics = false;
+        showNotification('Редактирование отменено', 'info');
+    }
+
+    function renderFanficsList() {
+        const container = document.getElementById('fanficsContainer');
+        let fanficsHTML = '<div class="fanfics-list">';
+        fanficsData.fanfics.forEach(fanfic => {
+            fanficsHTML += `
+                <div class="fanfic-card">
+                    <div class="fanfic-title">
+                        <a href="${fanfic.url}" target="_blank">${fanfic.title}</a>
+                    </div>
+                    <div class="fanfic-author">
+                        <strong>Автор:</strong> ${fanfic.author}
+                    </div>
+                </div>
+            `;
+        });
+        fanficsHTML += '</div>';
+        container.innerHTML = fanficsHTML;
+    }
+
+    function saveFanfics() {
+        const container = document.getElementById('fanficsContainer');
+        const cards = container.querySelectorAll('.fanfic-card');
+        
+        cards.forEach((card, index) => {
+            const titleEl = card.querySelector('.editable-fanfic-title');
+            const linkInput = card.querySelector('.fanfic-link-input');
+            const authorEl = card.querySelector('.editable-fanfic-author');
+            
+            if (titleEl && fanficsData.fanfics[index]) {
+                fanficsData.fanfics[index].title = titleEl.textContent.trim();
+            }
+            
+            if (linkInput && fanficsData.fanfics[index]) {
+                fanficsData.fanfics[index].url = linkInput.value.trim();
+            }
+            
+            if (authorEl && fanficsData.fanfics[index]) {
+                fanficsData.fanfics[index].author = authorEl.textContent.trim();
+            }
+        });
+
+        document.getElementById('fanficsEditActions').classList.remove('active');
+        const btn = document.querySelector('.page[data-id="fanfics"] .edit-toggle-btn');
+        if (btn) btn.textContent = 'Редактировать';
+
+        renderFanficsList();
+
+        isEditingFanfics = false;
+        showNotification('Фанфики сохранены!', 'success');
     }
 
     // ===== ЭКСПОРТ JSON =====
@@ -1632,7 +1893,8 @@
         const data = {
             characters: sortedCharacters,
             synopsis: synopsisData,
-            arts: artsData.arts
+            arts: artsData.arts,
+            fanfics: fanficsData.fanfics
         };
 
         const json = JSON.stringify(data, null, 2);
@@ -1683,6 +1945,7 @@
 
         container.innerHTML = renderSynopsis();
         container.innerHTML += renderArts();
+        container.innerHTML += renderFanfics();
 
         sortedCharacters.forEach(char => {
             container.innerHTML += renderPage(char);
@@ -1705,6 +1968,9 @@
     window.toggleArtsEdit = toggleArtsEdit;
     window.saveArts = saveArts;
     window.cancelArtsEdit = cancelArtsEdit;
+    window.toggleFanficsEdit = toggleFanficsEdit;
+    window.saveFanfics = saveFanfics;
+    window.cancelFanficsEdit = cancelFanficsEdit;
     window.exportData = exportData;
     window.exitEditMode = exitEditMode;
     window.showNotification = showNotification;
